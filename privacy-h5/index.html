@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>LarkyGO 隐私政策 · Privacy Policy</title>
+<style>
+  :root{--ink:#1C1726;--cream:#F7F2E9;--violet:#6C4DFF;--lime:#CFFF3D;--muted:#8a84a0;--coral:#FF5A36}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;background:var(--cream);color:var(--ink);line-height:1.85;font-size:15px;padding:0 0 80px}
+  .hero{background:linear-gradient(135deg,#6C4DFF,#8f7bff);color:#fff;padding:56px 24px 40px;border-radius:0 0 32px 32px}
+  .hero .brand{font-size:36px;font-weight:900;letter-spacing:1px}
+  .hero .brand em{color:var(--coral);font-style:normal}
+  .hero p{margin-top:10px;font-size:13px;opacity:.85;letter-spacing:2px;font-weight:600}
+  .wrap{max-width:680px;margin:0 auto;padding:0 20px}
+  .tabs{display:flex;gap:10px;margin:24px 0;position:sticky;top:0;background:var(--cream);padding:12px 0;z-index:9}
+  .tab{flex:1;text-align:center;padding:12px;border:2.5px solid var(--ink);border-radius:99px;background:#fff;font-weight:800;font-size:14px;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+  .tab.on{background:var(--lime)}
+  .doc{background:#fff;border:3px solid var(--ink);border-radius:24px;box-shadow:6px 6px 0 var(--ink);padding:28px 22px;display:none}
+  .doc.show{display:block}
+  .doc h2{font-size:17px;margin:22px 0 8px;font-weight:900}
+  .doc h2:first-child{margin-top:0}
+  .doc h2 span{background:var(--lime);padding:0 6px;border-radius:6px}
+  .doc p,.doc li{font-size:13.5px;color:#3c3650;margin:6px 0}
+  .doc ul{padding-left:20px}
+  .doc .meta{font-size:12px;color:var(--muted);border-bottom:2px dashed #ddd;padding-bottom:14px;margin-bottom:14px}
+  .en{color:#6b6480;font-style:italic;font-size:12.5px}
+  .footer{text-align:center;font-size:11px;color:var(--muted);margin-top:36px;letter-spacing:2px}
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="wrap">
+      <div class="brand">Larky<em>GO</em></div>
+      <p>PRIVACY & TERMS · 隐私政策与用户协议</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="tabs">
+      <div class="tab on" id="tab-privacy" onclick="switchDoc('privacy')">隐私政策<br><span style="font-size:10px;font-weight:600">Privacy Policy</span></div>
+      <div class="tab" id="tab-terms" onclick="switchDoc('terms')">用户协议<br><span style="font-size:10px;font-weight:600">Terms of Service</span></div>
+    </div>
+
+    <!-- ============ 隐私政策 ============ -->
+    <div class="doc show" id="doc-privacy">
+      <div class="meta">版本 V1.0 · 生效日期 / Effective: 2026-10-01 · 运营者 / Operator：沈奕辰（个人开发者） / Yichen Shen (individual developer)</div>
+
+      <h2><span>1.</span> 我们收集的信息 / What We Collect</h2>
+      <p>LarkyGO（以下简称"我们"）在您使用本小程序时，仅出于实现产品功能之目的收集以下信息：</p>
+      <ul>
+        <li><b>微信登录凭据（openid）</b>：用于识别您的账号、同步您的报名与票务记录。<span class="en">WeChat login credential (openid) for account identification.</span></li>
+        <li><b>头像与昵称</b>：仅当您主动选择头像/填写昵称时收集，用于在活动页与报名列表中展示。<span class="en">Avatar & nickname, collected only with your explicit action.</span></li>
+        <li><b>您主动发布的内容</b>：活动名称、时间、地点、票价、海报图片等。<span class="en">Event content you actively publish.</span></li>
+        <li><b>设备与日志信息</b>：为保障服务安全所必需的基础日志。<span class="en">Basic device & log data for security.</span></li>
+      </ul>
+      <p class="en">We do NOT collect your location, contacts, or any sensitive personal information. 我们不收集您的位置、通讯录及其他敏感个人信息。</p>
+
+      <h2><span>2.</span> 信息的使用 / How We Use It</h2>
+      <ul>
+        <li>为您提供建班/报名/票务/活动发现等核心功能；</li>
+        <li>对您发布的内容进行安全审核（配合微信内容安全能力）；</li>
+        <li>向您发送与您报名活动相关的开票/变更提醒。</li>
+      </ul>
+
+      <h2><span>3.</span> 第三方服务 / Third-Party Services</h2>
+      <p>本小程序的 AI 功能由第三方大模型服务提供（智谱 GLM）。当您使用 AI 对话或识图功能时，您输入的文本/上传的图片会经我们的服务器转发至该服务商处理。<b>我们不会将您的微信身份信息提供给第三方。</b></p>
+      <p class="en">AI features are powered by third-party LLM services (Zhipu GLM). Your inputs to AI features are forwarded via our server. We never share your WeChat identity with third parties.</p>
+
+      <h2><span>4.</span> 信息存储与保护 / Storage & Security</h2>
+      <ul>
+        <li>信息存储于中华人民共和国境内的服务器；</li>
+        <li>我们采用加密传输（HTTPS）与访问控制保护您的数据；</li>
+        <li>仅在为您提供服务所必需的期限内保留，注销后 30 日内删除或匿名化。</li>
+      </ul>
+
+      <h2><span>5.</span> 您的权利 / Your Rights</h2>
+      <ul>
+        <li>查询、更正、删除您的个人信息；</li>
+        <li>撤回授权、注销账号（通过小程序【我的 → 帮助与客服】联系我们）；</li>
+        <li>注销后您的报名/票务数据将同步删除。</li>
+      </ul>
+
+      <h2><span>6.</span> 未成年人保护 / Minors</h2>
+      <p>本小程序面向 18 周岁以上用户。若您未满 18 周岁，请在监护人陪同下使用并取得监护人同意。</p>
+
+      <h2><span>7.</span> 联系我们 / Contact</h2>
+      <p>运营者：沈奕辰（个人开发者） · 联系邮箱：<a href="mailto:ellacareer@outlook.com" style="color:var(--violet);text-decoration:underline">ellacareer@outlook.com</a> · 客服渠道：小程序内置客服消息 / In-app customer service</p>
+      <p>我们将以善意方式解释本政策，并在变更时于本页公示。继续使用即视为接受更新后的政策。</p>
+    </div>
+
+    <!-- ============ 用户协议 ============ -->
+    <div class="doc" id="doc-terms">
+      <div class="meta">版本 V1.0 · 生效日期 / Effective: 2026-10-01</div>
+
+      <h2><span>1.</span> 协议范围 / Scope</h2>
+      <p>本协议是您与 LarkyGO 运营者之间关于使用本小程序服务的约定。您使用本服务即视为已阅读并同意本协议。</p>
+
+      <h2><span>2.</span> 账号 / Account</h2>
+      <ul>
+        <li>本服务基于微信账号体系，您需通过微信授权登录；</li>
+        <li>您须为 18 周岁以上、具有完全民事行为能力的自然人；</li>
+        <li>您应对账号下的全部行为负责。</li>
+      </ul>
+
+      <h2><span>3.</span> 用户行为规范 / Code of Conduct</h2>
+      <p>您在使用本服务发布活动、评论、图片等内容时，承诺不发布以下内容：</p>
+      <ul>
+        <li>违反法律法规、危害国家安全与社会稳定的内容；</li>
+        <li>色情、暴力、赌博、诈骗、歧视性内容；</li>
+        <li>侵犯他人知识产权、肖像权、隐私权的内容；</li>
+        <li>虚假活动信息或用于非法集会的信息。</li>
+      </ul>
+      <p>违反上述规范的，我们有权不经通知删除内容、限制或终止您的账号。</p>
+
+      <h2><span>4.</span> 活动与票务 / Events & Tickets</h2>
+      <ul>
+        <li>活动由用户/主办方发布，我们提供信息展示与报名工具，不对活动真实性、安全性承担担保责任；</li>
+        <li>您参加线下活动应注意人身与财物安全，建议购买相应保险；</li>
+        <li>付费票务适用主办方公示的退改规则；因不可抗力取消的，按规则退款。</li>
+      </ul>
+
+      <h2><span>5.</span> 知识产权 / IP</h2>
+      <p>您发布的内容授予我们在本小程序内展示、传播所需的免费许可；LarkyGO 的品牌、界面与代码归运营者所有。</p>
+
+      <h2><span>6.</span> 免责声明 / Disclaimer</h2>
+      <p>本服务按"现状"提供。因网络、第三方服务或不可抗力导致的服务中断，我们不承担责任。您因参加第三方活动产生的纠纷，应与活动主办方协商解决。</p>
+
+      <h2><span>7.</span> 法律适用 / Governing Law</h2>
+      <p>本协议适用中华人民共和国法律。争议应友好协商，协商不成提交运营者所在地有管辖权的人民法院。</p>
+
+      <h2><span>8.</span> 联系我们 / Contact</h2>
+      <p>运营者：沈奕辰（个人开发者） · 联系邮箱：<a href="mailto:ellacareer@outlook.com" style="color:var(--violet);text-decoration:underline">ellacareer@outlook.com</a></p>
+    </div>
+
+    <div class="footer">LarkyGO · GO OUT, PLAY NOW</div>
+  </div>
+<script>
+function switchDoc(k){
+  document.querySelectorAll('.doc').forEach(d=>d.classList.remove('show'))
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'))
+  document.getElementById('doc-'+k).classList.add('show')
+  document.getElementById('tab-'+k).classList.add('on')
+}
+</script>
+</body>
+</html>

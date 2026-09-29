@@ -1,0 +1,16 @@
+.page { padding: 24rpx 32rpx 80rpx; }
+.tabs { display: flex; gap: 18rpx; margin-bottom: 24rpx; }
+.tab { flex: 1; text-align: center; padding: 20rpx; border: 4rpx solid var(--ink); border-radius: 99rpx; background: #fff; font-weight: 900; font-size: 26rpx; box-shadow: 5rpx 5rpx 0 var(--ink); }
+.tab.on { background: var(--lime); }
+.doc { background: #fff; border: 4rpx solid var(--ink); border-radius: 32rpx; box-shadow: 8rpx 8rpx 0 var(--ink); padding: 34rpx 30rpx; }
+.meta { font-size: 20rpx; color: var(--muted); border-bottom: 3rpx dashed rgba(28,23,38,.15); padding-bottom: 18rpx; margin-bottom: 18rpx; }
+.h { font-size: 28rpx; font-weight: 900; margin: 28rpx 0 10rpx; }
+.h:first-of-type { margin-top: 0; }
+.p { font-size: 24rpx; color: #3c3650; line-height: 1.8; margin: 8rpx 0; }
+
+/* ===== 从登录流程跳入：顶部说明 + 底部同意按钮 ===== */
+.from-tip { display: flex; align-items: center; gap: 14rpx; padding: 18rpx 22rpx; border: 4rpx solid var(--ink); border-radius: 18rpx; background: var(--sun); box-shadow: 5rpx 5rpx 0 var(--ink); margin-bottom: 22rpx; }
+.from-ico { font-size: 30rpx; }
+.from-t { flex: 1; font-size: 22rpx; font-weight: 800; line-height: 1.4; }
+.agree-bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom)); background: linear-gradient(to top, var(--paper) 80%, transparent); }
+.agree-btn { text-align: center; padding: 26rpx 0; border: 5rpx solid var(--ink); border-radius: 99rpx; background: var(--violet); color: #fff; font-weight: 900; font-size: 30rpx; box-shadow: 6rpx 6rpx 0 var(--ink); }

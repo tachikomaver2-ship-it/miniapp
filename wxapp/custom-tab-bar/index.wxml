@@ -1,0 +1,12 @@
+<view class="bar">
+  <view wx:for="{{tabs}}" wx:key="id" class="item {{item.on?'on':''}}" data-route="{{item.route}}" bindtap="go">
+    <block wx:if="{{item.id === 2}}">
+      <view class="blob {{item.on?'blob-on':''}}">{{item.icon}}</view>
+      <text class="lb">{{item.label}}</text>
+    </block>
+    <block wx:else>
+      <text class="ic">{{item.icon}}</text>
+      <text class="lb">{{item.label}}</text>
+    </block>
+  </view>
+</view>

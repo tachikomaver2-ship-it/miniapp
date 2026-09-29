@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 680">
+ <g transform="translate(340,270)">
+   <path d="M -1.48 -163.57 Q 0.00 -168.00 1.48 -163.57 L 37.29 -56.14 Q 42.00 -42.00 55.89 -36.60 L 144.93 -1.97 Q 150.00 0.00 144.93 1.97 L 56.83 36.23 Q 42.00 42.00 36.23 56.83 L 1.97 144.93 Q 0.00 150.00 -1.97 144.93 L -36.23 56.83 Q -42.00 42.00 -56.83 36.23 L -144.93 1.97 Q -150.00 0.00 -144.93 -1.97 L -55.89 -36.60 Q -42.00 -42.00 -37.29 -56.14 Z" fill="#1C1726" transform="translate(14.0,14.0) scale(1)"/>
+   <path d="M -1.48 -163.57 Q 0.00 -168.00 1.48 -163.57 L 37.29 -56.14 Q 42.00 -42.00 55.89 -36.60 L 144.93 -1.97 Q 150.00 0.00 144.93 1.97 L 56.83 36.23 Q 42.00 42.00 36.23 56.83 L 1.97 144.93 Q 0.00 150.00 -1.97 144.93 L -36.23 56.83 Q -42.00 42.00 -56.83 36.23 L -144.93 1.97 Q -150.00 0.00 -144.93 -1.97 L -55.89 -36.60 Q -42.00 -42.00 -37.29 -56.14 Z" fill="#6C4DFF" transform="scale(1)"/>
+   <circle cx="93.0" cy="-104.2" r="24.0" fill="#FF5A36"/>
+ </g>
+ <text x="340" y="570" text-anchor="middle" font-family="Inter, Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="900" font-size="145" letter-spacing="4"><tspan fill="#6C4DFF">Larky</tspan><tspan fill="#FF5A36">GO</tspan></text>
+ <text x="340" y="632" text-anchor="middle" font-family="Inter, Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="800" font-size="33" letter-spacing="11" fill="#1C1726" opacity=".72">GO OUT · PLAY NOW</text>
+</svg>

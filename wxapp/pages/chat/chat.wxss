@@ -1,0 +1,68 @@
+.page { display: flex; flex-direction: column; height: 100vh; }
+
+.chat-head { display: flex; align-items: center; gap: 18rpx; padding: 100rpx 32rpx 20rpx; background: var(--sun); border-bottom: 4rpx solid var(--ink); }
+.ai-ava { width: 84rpx; height: 84rpx; background: var(--ink); color: var(--lime); border: 4rpx solid var(--ink); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40rpx; font-weight: 900; }
+.ch-t { flex: 1; display: flex; flex-direction: column; }
+.ch-name { font-size: 32rpx; font-weight: 900; }
+.ch-sub { font-size: 20rpx; font-weight: 700; opacity: .75; }
+.ch-lang { width: 68rpx; height: 68rpx; border: 4rpx solid var(--ink); border-radius: 99rpx; background: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 30rpx; font-weight: 900; box-shadow: 4rpx 4rpx 0 var(--ink); }
+
+.msgs { flex: 1; padding: 24rpx 32rpx; box-sizing: border-box; height: 0; }
+.msg { display: flex; flex-direction: column; margin-bottom: 26rpx; }
+.msg.user { align-items: flex-end; }
+.msg.bot { align-items: flex-start; }
+.bubble { max-width: 82%; border: 4rpx solid var(--ink); border-radius: 28rpx; padding: 20rpx 26rpx; background: var(--paper); box-shadow: 5rpx 5rpx 0 var(--ink); }
+.msg.user .bubble { background: var(--lime); }
+.b-text { font-size: 26rpx; font-weight: 600; line-height: 1.6; white-space: pre-line; }
+.m-time { font-size: 18rpx; color: var(--muted); margin-top: 8rpx; font-weight: 700; }
+.u-img { width: 320rpx; height: 320rpx; border: 4rpx solid var(--ink); border-radius: 24rpx; box-shadow: 5rpx 5rpx 0 var(--ink); }
+
+/* typing */
+.typing { display: flex; gap: 10rpx; padding: 24rpx 30rpx; }
+.td { width: 14rpx; height: 14rpx; background: var(--ink); border-radius: 50%; animation: blink 1s infinite; }
+.td:nth-child(2) { animation-delay: .2s; }
+.td:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%, 60%, 100% { opacity: .25; } 30% { opacity: 1; } }
+
+/* 活动卡 */
+.c-cards { display: flex; flex-direction: column; gap: 16rpx; margin-top: 18rpx; }
+.c-card { display: flex; gap: 16rpx; align-items: center; border: 4rpx solid var(--ink); border-radius: 20rpx; background: var(--cream); padding: 14rpx; }
+.cc-grad { width: 88rpx; height: 88rpx; border: 3rpx solid var(--ink); border-radius: 16rpx; display: flex; align-items: center; justify-content: center; font-size: 44rpx; flex-shrink: 0; }
+.cc-info { display: flex; flex-direction: column; min-width: 0; }
+.cc-title { font-weight: 900; font-size: 24rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cc-meta { font-size: 20rpx; color: var(--muted); font-weight: 700; }
+.go-all { margin-top: 16rpx; text-align: center; border: 3rpx dashed var(--ink); border-radius: 99rpx; padding: 10rpx; font-size: 22rpx; font-weight: 900; background: var(--cream); }
+
+/* 草稿卡 */
+.draft { margin-top: 18rpx; border-top: 3rpx dashed rgba(28,23,38,.25); padding-top: 16rpx; display: flex; flex-direction: column; gap: 12rpx; }
+.drow { display: flex; gap: 14rpx; }
+.dl { width: 100rpx; font-size: 18rpx; font-weight: 900; color: var(--violet); letter-spacing: 2rpx; flex-shrink: 0; }
+.dv { font-size: 24rpx; font-weight: 800; flex: 1; }
+.d-actions { display: flex; gap: 16rpx; margin-top: 8rpx; }
+.d-ok, .d-re { flex: 1; text-align: center; border: 4rpx solid var(--ink); border-radius: 99rpx; padding: 12rpx; font-size: 22rpx; font-weight: 900; }
+.d-ok { background: var(--coral); color: #fff; box-shadow: 4rpx 4rpx 0 var(--ink); }
+.d-re { background: var(--cream); box-shadow: 4rpx 4rpx 0 var(--ink); }
+
+/* 快捷 + 输入 */
+.quick { display: flex; gap: 14rpx; padding: 10rpx 24rpx; white-space: nowrap; background: var(--cream); }
+.qchip { flex-shrink: 0; border: 3rpx solid var(--ink); border-radius: 99rpx; background: var(--paper); padding: 10rpx 24rpx; font-size: 22rpx; font-weight: 800; box-shadow: 3rpx 3rpx 0 var(--ink); }
+.qchip:active { background: var(--lime); }
+
+.inputbar { display: flex; align-items: center; gap: 14rpx; padding: 16rpx 24rpx calc(180rpx + env(safe-area-inset-bottom)); background: var(--cream); }
+.cam, .send { width: 84rpx; height: 84rpx; border: 4rpx solid var(--ink); border-radius: 99rpx; background: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 36rpx; box-shadow: 4rpx 4rpx 0 var(--ink); flex-shrink: 0; }
+.send { background: var(--violet); color: #fff; }
+.ipt { flex: 1; border: 4rpx solid var(--ink); border-radius: 99rpx; background: var(--paper); padding: 18rpx 30rpx; font-size: 26rpx; box-shadow: 4rpx 4rpx 0 var(--ink); }
+
+/* 语音按钮（按住说话模式） */
+.mic { min-width: 130rpx; height: 70rpx; border: 4rpx solid var(--ink); border-radius: 99rpx; background: var(--paper); display: flex; align-items: center; justify-content: center; gap: 8rpx; padding: 0 18rpx; box-shadow: 4rpx 4rpx 0 var(--ink); flex-shrink: 0; transition: transform .15s; }
+.mic:active { transform: translateY(2rpx); box-shadow: 2rpx 2rpx 0 var(--ink); }
+.mic.recording { background: var(--coral); color: #fff; animation: mic-pulse 1s infinite; }
+.mic-ico { font-size: 28rpx; }
+.mic-txt { font-size: 20rpx; font-weight: 900; }
+@keyframes mic-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+/* 录音底部提示 */
+.voice-tip { position: fixed; left: 50%; bottom: 320rpx; transform: translateX(-50%); background: var(--ink); color: var(--lime); padding: 16rpx 28rpx; border-radius: 99rpx; display: flex; align-items: center; gap: 12rpx; font-size: 22rpx; font-weight: 800; box-shadow: 6rpx 6rpx 0 rgba(28,23,38,.2); z-index: 99; }
+.vt-dot { width: 18rpx; height: 18rpx; border-radius: 50%; background: var(--coral); animation: blink-dot 1s infinite; }
+@keyframes blink-dot { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.pad-bottom { height: 40rpx; }

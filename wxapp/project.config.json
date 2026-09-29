@@ -1,0 +1,17 @@
+{
+  "compileType": "miniprogram",
+  "projectname": "LarkyGO",
+  "appid": "wx305570d7a22a004a",
+  "libVersion": "3.7.12",
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": false,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "ignoreUploadUnusedFiles": true
+  },
+  "condition": {},
+  "cloudfunctionRoot": "cloudfunctions/"
+}

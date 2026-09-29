@@ -1,0 +1,54 @@
+/* ===== LarkyGO Neo-Pop 主题（奶油底 × 粗描边 × 硬阴影） ===== */
+page {
+  --cream: #F7F2E9;
+  --paper: #FFFDF7;
+  --ink: #1C1726;
+  --violet: #6C4DFF;
+  --coral: #FF5A36;
+  --lime: #A8E829;
+  --cyan: #2FD4E0;
+  --pink: #FF6FA5;
+  --sun: #FFC531;
+  --muted: #8a84a0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
+}
+
+/* 通用贴纸卡 */
+.card {
+  background: var(--paper);
+  border: 4rpx solid var(--ink);
+  border-radius: 28rpx;
+  box-shadow: 8rpx 8rpx 0 var(--ink);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 12rpx 26rpx;
+  border: 4rpx solid var(--ink);
+  border-radius: 99rpx;
+  background: var(--paper);
+  font-size: 24rpx;
+  font-weight: 700;
+  box-shadow: 4rpx 4rpx 0 var(--ink);
+}
+.chip.on { background: var(--lime); }
+
+.btn-main {
+  background: var(--violet);
+  color: #fff;
+  border: 4rpx solid var(--ink);
+  border-radius: 99rpx;
+  box-shadow: 6rpx 6rpx 0 var(--ink);
+  font-weight: 900;
+  font-size: 28rpx;
+  padding: 20rpx 48rpx;
+  text-align: center;
+}
+.btn-main:active { transform: translate(4rpx, 4rpx); box-shadow: 2rpx 2rpx 0 var(--ink); }
+
+.sec-title { font-size: 40rpx; font-weight: 900; margin: 32rpx 0 20rpx; }
+.sec-title .hl { background: var(--lime); padding: 0 8rpx; border-radius: 6rpx; box-shadow: 3rpx 3rpx 0 var(--ink); }

@@ -1,0 +1,134 @@
+<view class="page">
+  <!-- 售票走马灯 -->
+  <view class="ticker">
+    <view class="inner"><text>{{tickerText}}{{tickerText}}</text></view>
+  </view>
+
+  <!-- 顶栏 -->
+  <view class="top">
+    <view class="brand">
+      <text class="b-name">Larky<text class="bang">GO</text></text>
+      <text class="b-sub">GO OUT · PLAY NOW</text>
+    </view>
+    <view class="top-right">
+      <view class="pill-btn" bindtap="toggleLang">{{lang==='zh'?'EN':'中'}}</view>
+      <view class="pill-btn" bindtap="searchTap">🔍</view>
+    </view>
+  </view>
+
+  <!-- 城市胶囊 -->
+  <view class="city-wrap">
+    <view class="city-pick" bindtap="openCity">
+      <view class="dot"></view>
+      <text class="city-name">{{cityLabel}}</text>
+      <text class="chev">▾</text>
+    </view>
+  </view>
+
+  <!-- 搜索条 -->
+  <view class="searchbar" bindtap="searchTap">
+    <text class="s-ico">✦</text>
+    <text class="s-ph">{{t.searchPh}}</text>
+  </view>
+
+  <!-- 场景 chips -->
+  <scroll-view class="chips" scroll-x enable-flex>
+    <view wx:for="{{scenes}}" wx:key="id" class="chip" data-scene="{{item.id}}" bindtap="goScene">
+      {{item.emoji}} {{item.name}}
+    </view>
+  </scroll-view>
+
+  <!-- bento 首推位 -->
+  <view class="bento">
+    <view class="hero" wx:if="{{hero}}" style="background:{{hero.grad}}" data-idx="{{hero.idx}}" bindtap="openDetail">
+      <text class="bg-emoji">{{hero.emoji}}</text>
+      <view class="scene-tag">{{hero.tag}}</view>
+      <view class="hero-row">
+        <view class="hero-txt">
+          <text class="hero-title">{{hero.title}}</text>
+          <text class="hero-meta">{{hero.dateText}}</text>
+        </view>
+        <view class="hero-price">¥{{hero.price}}</view>
+      </view>
+    </view>
+    <view class="bcol">
+      <view class="bcard" style="background:var(--cyan)" data-page="calendar" bindtap="goTab">
+        <text class="big">{{statCount}}</text>
+        <text class="b-desc">{{t.statDesc}}</text>
+        <text class="b-stk" style="background:var(--sun)">THIS WEEK</text>
+      </view>
+      <view class="bcard" style="background:var(--pink)" data-page="tickets" bindtap="goTab">
+        <text class="big">🎫</text>
+        <text class="b-desc" style="color:rgba(255,255,255,.85)">{{t.statTix}}</text>
+        <text class="b-stk" style="background:#fff">WALLET</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 本周热榜 -->
+  <view class="sec">
+    <text class="sec-title">{{lang==='zh'?'本周':'This Week'}}<text class="hl">{{lang==='zh'?'热榜':'HOT'}}</text></text>
+    <text class="more" data-scene="all" bindtap="goScene">{{t.viewAll}}</text>
+  </view>
+  <scroll-view class="rail" scroll-x enable-flex>
+    <view wx:for="{{rail}}" wx:key="idx" class="rail-card" style="background:{{item.grad}}" data-idx="{{item.idx}}" bindtap="openDetail">
+      <text class="rc-emoji">{{item.emoji}}</text>
+      <view class="rc-tag" style="background:{{item.chip}}">{{item.tag}}</view>
+      <text class="rc-title">{{item.title}}</text>
+      <text class="rc-meta">{{item.dateText}}</text>
+      <text class="rc-price">¥{{item.price}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 马上开跳 -->
+  <view class="sec">
+    <text class="sec-title">{{lang==='zh'?'马上':'Happening '}}<text class="hl">{{lang==='zh'?'开跳':'NOW'}}</text></text>
+  </view>
+  <view class="rows">
+    <view wx:for="{{rows}}" wx:key="idx" class="row-card card" data-idx="{{item.idx}}" bindtap="openDetail">
+      <view class="rc-l">
+        <view class="rc-grad" style="background:{{item.grad}}">{{item.emoji}}</view>
+        <view class="rc-info">
+          <text class="rc-i-title">{{item.title}}</text>
+          <text class="rc-i-meta">📅 {{item.dateText}} · 📍 {{item.venue}}</text>
+          <text class="rc-i-sub">✦ {{item.host}} · {{item.going}} {{t.people}}</text>
+        </view>
+      </view>
+      <view class="rc-r">
+        <text class="rc-i-price">¥{{item.price}}<text class="rc-per">{{t.per}}</text></text>
+        <text class="rc-i-tag" style="background:{{item.chip}}">{{item.tag}}</text>
+      </view>
+    </view>
+    <view wx:if="{{!rows.length}}" class="empty">{{t.emptyCity}}</view>
+  </view>
+
+  <!-- 城市抽屉 -->
+  <view class="mask {{citySheet?'show':''}}" bindtap="closeCity"></view>
+  <view class="sheet {{citySheet?'show':''}}">
+    <view class="handle"></view>
+    <text class="sheet-title">{{t.sheetCityT}}</text>
+    <view class="city-grid">
+      <view wx:for="{{cityGrid}}" wx:key="id" class="city-cell {{item.on?'on':''}}" data-id="{{item.id}}" bindtap="pickCity">
+        <text class="cc-zh">{{item.label}}</text>
+        <text class="cc-py">{{item.py}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 隐私授权弹窗（微信规范 onNeedPrivacyAuthorization 联动） -->
+  <view wx:if="{{privacyNeed}}" class="p-mask">
+    <view class="p-card">
+      <view class="p-badge">🛡️</view>
+      <text class="p-title">{{lang==='zh'?'隐私保护指引':'Privacy Notice'}}</text>
+      <view class="p-body">
+        <text>{{lang==='zh'?'欢迎使用 LarkyGO！在你使用前，请阅读并同意':'Welcome to LarkyGO! Before we start, please read and agree to our'}}</text>
+        <text class="p-link" catchtap="openAgreement">《{{lang==='zh'?'用户隐私保护指引':'Privacy Policy'}}》</text>
+        <text class="p-link" catchtap="openAgreement">《{{lang==='zh'?'用户服务协议':'Terms of Service'}}》</text>
+        <text wx:if="{{lang==='zh'}}">。我们会依法保护你的个人信息，点击「同意并继续」即代表你已阅读并同意上述协议。</text>
+        <text wx:else>. We protect your personal data by law. Tapping "Agree" means you have read and accepted them.</text>
+      </view>
+      <button id="agree-btn" class="p-agree" bindtap="agreePrivacy">{{lang==='zh'?'同意并继续':'Agree & Continue'}}</button>
+      <view class="p-refuse" bindtap="refusePrivacy">{{lang==='zh'?'不同意（退出）':'Refuse & Exit'}}</view>
+    </view>
+  </view>
+</view>

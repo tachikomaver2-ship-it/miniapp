@@ -1,0 +1,57 @@
+.page { padding: 100rpx 32rpx 220rpx; }
+.head { display: flex; align-items: center; gap: 22rpx; padding: 28rpx; }
+.ava { width: 120rpx; height: 120rpx; border: 4rpx solid var(--ink); border-radius: 50%; background: var(--lime); display: flex; align-items: center; justify-content: center; font-size: 60rpx; flex-shrink: 0; }
+.h-t { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.h-name { font-size: 34rpx; font-weight: 900; }
+.h-sub { font-size: 20rpx; color: var(--muted); font-weight: 700; margin-top: 6rpx; }
+.lang-btn { border: 4rpx solid var(--ink); border-radius: 99rpx; background: var(--sun); padding: 10rpx 26rpx; font-weight: 900; font-size: 24rpx; box-shadow: 4rpx 4rpx 0 var(--ink); }
+
+.stats { display: flex; gap: 20rpx; margin: 26rpx 0 8rpx; }
+.stat { flex: 1; padding: 22rpx; display: flex; flex-direction: column; align-items: center; }
+.st-n { font-size: 44rpx; font-weight: 900; color: var(--violet); }
+.st-l { font-size: 20rpx; font-weight: 800; color: var(--muted); margin-top: 4rpx; }
+
+.sec-t { display: block; font-size: 28rpx; font-weight: 900; margin: 32rpx 0 18rpx; letter-spacing: 2rpx; }
+.vibes { display: flex; flex-wrap: wrap; gap: 14rpx; }
+.vibe { border: 3rpx solid var(--ink); border-radius: 99rpx; background: var(--paper); padding: 10rpx 24rpx; font-size: 22rpx; font-weight: 800; box-shadow: 3rpx 3rpx 0 var(--ink); transform: rotate(-1deg); }
+.vibe:nth-child(2n) { transform: rotate(1.5deg); }
+
+.menu { padding: 10rpx 24rpx; }
+.me-item { display: flex; align-items: center; gap: 20rpx; padding: 24rpx 0; border-bottom: 3rpx dashed rgba(28,23,38,.15); }
+.me-item:last-child { border-bottom: none; }
+.mi { width: 76rpx; height: 76rpx; border: 3rpx solid var(--ink); border-radius: 20rpx; display: flex; align-items: center; justify-content: center; font-size: 36rpx; flex-shrink: 0; }
+.mi-0 { background: var(--lime); }
+.mi-1 { background: var(--sun); }
+.mi-2 { background: var(--cyan); }
+.mi-3 { background: var(--pink); }
+.mi-4 { background: var(--paper); }
+.mi-l { flex: 1; font-size: 26rpx; font-weight: 800; }
+.ar { font-size: 32rpx; font-weight: 900; color: var(--muted); }
+
+.foot { display: block; text-align: center; color: var(--muted); font-size: 18rpx; letter-spacing: 4rpx; padding: 36rpx 0 0; font-weight: 800; }
+
+/* ===== 登录条 ===== */
+.login-bar { display: flex; align-items: center; gap: 16rpx; margin-top: 22rpx; background: var(--violet); border: 4rpx solid var(--ink); border-radius: 22rpx; box-shadow: 6rpx 6rpx 0 var(--ink); padding: 22rpx 26rpx; flex-wrap: wrap; }
+.login-bar.out { background: #fff; }
+.lb-ico { font-size: 32rpx; }
+.lb-txt { color: #fff; font-weight: 900; font-size: 28rpx; }
+.login-bar.out .lb-txt { color: var(--ink); }
+.lb-sub { width: 100%; color: rgba(255,255,255,.85); font-size: 20rpx; }
+
+/* ===== 隐私协议授权弹窗（Neo-Pop 贴纸风） ===== */
+.pp-mask { position: fixed; inset: 0; background: rgba(28,23,38,.55); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 0 40rpx; }
+.pp-card { width: 100%; max-width: 620rpx; background: var(--paper); border: 5rpx solid var(--ink); border-radius: 28rpx; box-shadow: 10rpx 10rpx 0 var(--ink); padding: 40rpx 36rpx 32rpx; position: relative; transform: rotate(-1deg); }
+.pp-spark { position: absolute; top: -22rpx; right: 24rpx; width: 60rpx; height: 60rpx; border: 4rpx solid var(--ink); border-radius: 50%; background: var(--sun); display: flex; align-items: center; justify-content: center; font-size: 36rpx; font-weight: 900; box-shadow: 4rpx 4rpx 0 var(--ink); transform: rotate(8deg); }
+.pp-title { font-size: 36rpx; font-weight: 900; margin-bottom: 8rpx; }
+.pp-sub { font-size: 22rpx; font-weight: 700; color: var(--muted); margin-bottom: 24rpx; }
+.pp-docs { display: flex; flex-direction: column; gap: 14rpx; margin-bottom: 22rpx; }
+.pp-doc { display: flex; align-items: center; gap: 18rpx; padding: 18rpx 22rpx; border: 4rpx solid var(--ink); border-radius: 18rpx; background: #fff; box-shadow: 4rpx 4rpx 0 var(--ink); }
+.pp-doc-ico { font-size: 32rpx; }
+.pp-doc-t { flex: 1; font-size: 26rpx; font-weight: 900; }
+.pp-doc-ar { font-size: 32rpx; font-weight: 900; color: var(--muted); }
+.pp-hint { font-size: 20rpx; color: var(--muted); font-weight: 700; line-height: 1.5; margin-bottom: 26rpx; }
+.pp-btns { display: flex; gap: 18rpx; }
+.pp-btn { flex: 1; text-align: center; padding: 22rpx 0; border: 4rpx solid var(--ink); border-radius: 99rpx; font-weight: 900; font-size: 28rpx; box-shadow: 5rpx 5rpx 0 var(--ink); }
+.pp-btn-cancel { background: #fff; color: var(--ink); }
+.pp-btn-ok { background: var(--violet); color: #fff; }
+.noop {}

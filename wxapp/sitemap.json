@@ -1,0 +1,4 @@
+{
+  "desc": "LarkyGO sitemap",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

@@ -1,0 +1,27 @@
+<view class="page">
+  <view class="head card">
+    <view class="back" bindtap="back">‹</view>
+    <text class="ht">{{title}}</text>
+    <view class="spacer"></view>
+  </view>
+  <scroll-view class="chips" scroll-x enable-flex>
+    <view wx:for="{{chips}}" wx:key="k" class="chip {{item.on?'on':''}}" data-k="{{item.k}}" bindtap="pickSub">{{item.label}}</view>
+  </scroll-view>
+  <view class="rows">
+    <view wx:for="{{rows}}" wx:key="idx" class="row-card card" data-idx="{{item.idx}}" bindtap="openDetail">
+      <view class="rc-l">
+        <view class="rc-grad" style="background:{{item.grad}}">{{item.emoji}}</view>
+        <view class="rc-info">
+          <text class="rc-i-title">{{item.title}}</text>
+          <text class="rc-i-meta">📅 {{item.dateText}}</text>
+          <text class="rc-i-sub">📍 {{item.venue}}</text>
+        </view>
+      </view>
+      <view class="rc-r">
+        <text class="rc-i-price">¥{{item.price}}<text class="rc-per">{{t.per}}</text></text>
+        <text class="rc-i-tag" style="background:{{item.chip}}">{{item.tag}}</text>
+      </view>
+    </view>
+    <view wx:if="{{!rows.length}}" class="empty">{{t.emptySub}}</view>
+  </view>
+</view>

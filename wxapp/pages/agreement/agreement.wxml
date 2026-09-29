@@ -1,0 +1,25 @@
+<view class="page">
+  <!-- 顶部说明 + 来源标记 -->
+  <view wx:if="{{fromLogin}}" class="from-tip">
+    <text class="from-ico">🔒</text>
+    <text class="from-t">{{lang === 'zh' ? '阅读完整协议后点击下方按钮即可登录' : 'Read the full terms, then tap the button below to log in'}}</text>
+  </view>
+
+  <view class="tabs">
+    <view class="tab {{tab === 0 ? 'on' : ''}}" data-i="0" bindtap="switchTab">{{doc.tabs[0]}}</view>
+    <view class="tab {{tab === 1 ? 'on' : ''}}" data-i="1" bindtap="switchTab">{{doc.tabs[1]}}</view>
+  </view>
+
+  <view class="doc">
+    <view class="meta">{{lang === 'en' ? 'V1.0 · Effective 2026-10-01' : 'V1.0 · 生效日期 2026-10-01'}}</view>
+    <block wx:for="{{tab === 0 ? doc.privacy : doc.terms}}" wx:key="h">
+      <view class="h">{{item.h}}</view>
+      <view class="p" wx:for="{{item.ps}}" wx:for-item="line" wx:key="*this">{{line}}</view>
+    </block>
+  </view>
+
+  <!-- 从登录流程跳进来时：底部加"同意并继续"按钮 -->
+  <view wx:if="{{fromLogin}}" class="agree-bar">
+    <view class="agree-btn" bindtap="agreeAndBack">{{lang === 'zh' ? '✓ 已阅读并同意，继续登录' : '✓ I have read & agree, continue'}}</view>
+  </view>
+</view>

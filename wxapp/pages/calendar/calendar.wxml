@@ -1,0 +1,24 @@
+<view class="page">
+  <view class="head">
+    <text class="brand">📅 {{t.calBrand}}</text>
+  </view>
+  <scroll-view class="rail" scroll-x enable-flex>
+    <view wx:for="{{days}}" wx:key="i" class="day {{item.on?'on':''}} {{item.count?'has':''}}" data-i="{{item.i}}" bindtap="pickDay">
+      <text class="d-wd">{{item.wd}}</text>
+      <text class="d-num">{{item.num}}</text>
+      <text class="d-cnt">{{item.count ? item.count : '·'}}</text>
+    </view>
+  </scroll-view>
+
+  <view class="rows">
+    <view wx:for="{{today}}" wx:key="idx" class="row-card card" data-idx="{{item.idx}}" bindtap="openDetail">
+      <view class="rc-grad" style="background:{{item.grad}}">{{item.emoji}}</view>
+      <view class="rc-info">
+        <text class="rc-i-title">{{item.title}}</text>
+        <text class="rc-i-meta">{{item.hm}} · 📍 {{item.venue}}</text>
+      </view>
+      <text class="rc-i-price">¥{{item.price}}</text>
+    </view>
+    <view wx:if="{{!today.length}}" class="empty">{{lang==='zh'?'这天先休息 · 换一天看看 🌴':'Rest day · try another 🌴'}}</view>
+  </view>
+</view>

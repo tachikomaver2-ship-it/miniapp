@@ -1,0 +1,70 @@
+<view class="page">
+  <view class="head card">
+    <view class="ava">🐸</view>
+    <view class="h-t">
+      <text class="h-name">{{userName}}</text>
+      <text class="h-sub">{{meSub}}</text>
+    </view>
+    <view class="lang-btn" bindtap="toggleLang">{{lang==='zh'?'EN':'中'}}</view>
+  </view>
+
+  <!-- 登录按钮 -->
+  <view class="login-bar {{logged ? 'out' : ''}}" bindtap="loginTap">
+    <text class="lb-ico">{{logged ? '↩' : '⚡'}}</text>
+    <text class="lb-txt">{{loginBtn}}</text>
+    <text wx:if="{{!logged}}" class="lb-sub">{{lang==='zh'?'登录前需同意《隐私政策》与《用户协议》':'Please accept Privacy & Terms before login'}}</text>
+  </view>
+
+  <view class="stats">
+    <view wx:for="{{stats}}" wx:key="l" class="stat card">
+      <text class="st-n">{{item.n}}</text>
+      <text class="st-l">{{item.l}}</text>
+    </view>
+  </view>
+
+  <text class="sec-t">{{lang==='zh'?'我的玩伴属性':'MY VIBES'}}</text>
+  <view class="vibes">
+    <text wx:for="{{vibes}}" wx:key="*this" class="vibe">{{item}}</text>
+  </view>
+
+  <text class="sec-t">{{lang==='zh'?'更多':'MORE'}}</text>
+  <view class="menu card">
+    <view wx:for="{{menu}}" wx:key="k" class="me-item" data-toast="{{item.toast}}" bindtap="menuTap">
+      <view class="mi mi-{{index}}">{{item.icon}}</view>
+      <text class="mi-l">{{item.label}}</text>
+      <text class="ar">›</text>
+    </view>
+  </view>
+
+  <text class="foot">LarkyGO · DEMO</text>
+</view>
+
+<!-- ================== 隐私协议授权弹窗 ================== -->
+<view wx:if="{{privacyNeed}}" class="pp-mask" bindtap="refusePrivacy">
+  <view class="pp-card" catch:tap="noop">
+    <!-- 贴纸装饰 -->
+    <view class="pp-spark">✦</view>
+    <view class="pp-title">{{lang==='zh'?'欢迎使用 LarkyGO!' : 'Welcome to LarkyGO!'}}</view>
+    <view class="pp-sub">{{lang==='zh'?'登录前请阅读并同意' : 'Please read and accept before login'}}</view>
+
+    <view class="pp-docs">
+      <view class="pp-doc" bindtap="openAgreement">
+        <text class="pp-doc-ico">📄</text>
+        <text class="pp-doc-t">{{lang==='zh'?'《隐私政策》' : 'Privacy Policy'}}</text>
+        <text class="pp-doc-ar">›</text>
+      </view>
+      <view class="pp-doc" bindtap="openAgreement">
+        <text class="pp-doc-ico">📋</text>
+        <text class="pp-doc-t">{{lang==='zh'?'《用户协议》' : 'Terms of Service'}}</text>
+        <text class="pp-doc-ar">›</text>
+      </view>
+    </view>
+
+    <view class="pp-hint">{{lang==='zh'?'点击"同意并登录"即视为您已阅读并同意上述协议' : 'Tapping "Agree & Login" means you accept the above terms'}}</view>
+
+    <view class="pp-btns">
+      <view class="pp-btn pp-btn-cancel" bindtap="refusePrivacy">{{lang==='zh'?'不同意' : 'Decline'}}</view>
+      <view class="pp-btn pp-btn-ok" bindtap="agreeAndLogin">{{lang==='zh'?'同意并登录' : 'Agree & Login'}}</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,24 @@
+<view class="page">
+  <view class="head">
+    <text class="brand">🎫 {{t.tixBrand}}</text>
+  </view>
+  <view class="rows">
+    <view wx:for="{{list}}" wx:key="no" class="stub card {{item.used?'used':''}}">
+      <view class="s-l">
+        <view class="s-grad" style="background:{{item.grad}}">{{item.emoji}}</view>
+        <view class="s-info">
+          <text class="s-title">{{item.title}}</text>
+          <text class="s-meta">{{item.type}} · {{item.dateText}}</text>
+          <text class="s-venue">📍 {{item.venue}}</text>
+          <text class="s-status">{{item.used ? t.tixStatus.used : t.tixStatus.valid}}</text>
+        </view>
+      </view>
+      <view class="s-r" data-no="{{item.no}}" bindtap="use">
+        <text class="s-no">LarkyGO {{t.ticketNo}} {{item.no}}</text>
+        <view class="qr"><view class="qr-box">▣▣▣</view><text class="qr-tap">{{lang==='zh'?'点我核销':'TAP TO CHECK'}}</text></view>
+        <view class="punch"></view>
+      </view>
+    </view>
+    <view wx:if="{{!list.length}}" class="empty">{{lang==='zh'?'票夹空空 · 去发现页逛逛 ✦':'Nothing here · go discover ✦'}}</view>
+  </view>
+</view>

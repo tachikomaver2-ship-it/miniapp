@@ -1,0 +1,40 @@
+{
+  "desc": "LarkyGO · GO OUT, PLAY NOW",
+  "pages": [
+    "pages/index/index",
+    "pages/list/list",
+    "pages/detail/detail",
+    "pages/chat/chat",
+    "pages/calendar/calendar",
+    "pages/tickets/tickets",
+    "pages/me/me",
+    "pages/agreement/agreement"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#F7F2E9",
+    "navigationBarTitleText": "LarkyGO",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F2E9",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#1C1726",
+    "selectedColor": "#6C4DFF",
+    "backgroundColor": "#F7F2E9",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "Discover" },
+      { "pagePath": "pages/calendar/calendar", "text": "Calendar" },
+      { "pagePath": "pages/chat/chat", "text": "AI" },
+      { "pagePath": "pages/tickets/tickets", "text": "Tickets" },
+      { "pagePath": "pages/me/me", "text": "Me" }
+    ]
+  },
+  "__usePrivacyCheck__": true,
+  "permission": {
+    "scope.record": {
+      "desc": "用于语音输入活动信息（按住说话）"
+    }
+  },
+  "sitemapLocation": "sitemap.json"
+}

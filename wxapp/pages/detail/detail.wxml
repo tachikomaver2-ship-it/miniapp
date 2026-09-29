@@ -1,0 +1,64 @@
+<view class="page" wx:if="{{vm}}">
+  <view class="cover" style="background:{{vm.grad}}">
+    <view class="c-back" bindtap="back">‹</view>
+    <view class="c-share" bindtap="share">SHARE</view>
+    <text class="c-emoji">{{vm.emoji}}</text>
+  </view>
+
+  <view class="body">
+    <view class="tags">
+      <text class="tag" style="background:{{vm.chip}}">{{vm.tag}}</text>
+      <text class="tag paper">EN/中英</text>
+      <text class="tag ink">{{t.selling}}</text>
+    </view>
+    <text class="title">{{vm.title}}</text>
+
+    <view class="info">
+      <view class="li"><text class="ic">📅</text><view class="li-t"><text class="b">{{vm.dateText}}</text><text class="s">{{t.dLabels.date}}</text></view></view>
+      <view class="li"><text class="ic">📍</text><view class="li-t"><text class="b">{{vm.venue}}</text><text class="s">{{t.dLabels.venue}}</text></view></view>
+      <view class="li"><text class="ic">✦</text><view class="li-t"><text class="b">{{vm.host}}</text><text class="s">{{t.dLabels.host}}</text></view></view>
+      <view class="li"><text class="ic">🗣</text><view class="li-t"><text class="b">English / 中文</text><text class="s">{{t.dLabels.lang}}</text></view></view>
+    </view>
+
+    <text class="sec-t">{{t.lineup}}</text>
+    <view class="lineup">
+      <view wx:for="{{lineup}}" wx:key="index" class="art card">
+        <text class="a-en">{{item[0]}}</text>
+        <text class="a-zh">{{item[1]}}</text>
+      </view>
+    </view>
+
+    <text class="sec-t">{{t.who}} · {{vm.going}} {{t.people}}</text>
+    <view class="avatars">
+      <text class="av" wx:for="{{['🧑‍🎤','👩‍🦰','🧑‍💻','👨‍🎨','👩‍🔬']}}" wx:key="*this">{{item}}</text>
+      <text class="more">+{{vm.going - 5}} →</text>
+    </view>
+
+    <view class="join-cta card" bindtap="joinGroup">
+      <view class="j-l">
+        <text class="j-b">{{t.joinGroup}}</text>
+        <text class="j-s">{{lang==='zh'?'双语群 · 面基不尴尬':'bilingual · no awkward icebreakers'}}</text>
+      </view>
+      <text class="j-go">GO →</text>
+    </view>
+
+    <text class="sec-t">{{t.dLabels.tix}}</text>
+    <view class="tickets">
+      <view wx:for="{{tix}}" wx:key="k" class="tix-opt card {{tixSel===item.k?'sel':''}}" data-k="{{item.k}}" bindtap="selTix">
+        <view class="to-l">
+          <text class="to-b">{{item.name}}</text>
+          <text class="to-s">{{item.desc}}</text>
+        </view>
+        <view class="to-p">
+          <text wx:if="{{item.was}}" class="was">¥{{item.was}}</text>
+          <text class="now">¥{{item.price}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom">
+      <view class="bp">¥{{curPrice}}<text class="per">{{t.per}}</text></view>
+      <button class="buy {{has?'ok':''}}" bindtap="buy">{{has?t.bought:t.buy}}</button>
+    </view>
+  </view>
+</view>

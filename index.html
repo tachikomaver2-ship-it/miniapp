@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LarkyGO · GO OUT, PLAY NOW</title>
+<style>
+  :root{
+    --cream:#F7F2E9; --ink:#1C1726; --paper:#FFFFFF;
+    --violet:#6C4DFF; --coral:#FF5A36; --lime:#A8E829; --cyan:#2FD4E0; --pink:#FF6FA5; --sun:#FFC531;
+    --line:#1C1726;
+    --sh:4px 4px 0 var(--ink); --sh-sm:3px 3px 0 var(--ink);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:"PingFang SC","Inter","SF Pro Display",sans-serif;
+    background:#EDE7DA;
+    background-image:radial-gradient(#e0d9c8 1.2px,transparent 1.2px);background-size:22px 22px;
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:28px 16px;color:var(--ink);
+  }
+  .stage{display:flex;gap:38px;align-items:flex-start;flex-wrap:wrap;justify-content:center;}
+  .side-note{max-width:300px;padding-top:20px;}
+  .side-note .tag{display:inline-block;background:var(--ink);color:var(--sun);font-size:10.5px;font-weight:900;padding:5px 12px;border-radius:99px;letter-spacing:2px;margin-bottom:14px;}
+  .side-note h1{font-size:34px;letter-spacing:-1.5px;line-height:1.1;margin-bottom:8px;}
+  .side-note h1 em{font-style:normal;color:var(--violet);}
+  .side-note h1 b{font-style:normal;color:var(--coral);}
+  .side-note p{font-size:13px;line-height:1.8;color:#57506a;margin-bottom:16px;}
+  .side-note .tips{background:var(--paper);border:2px solid var(--ink);border-radius:18px;box-shadow:var(--sh);padding:16px 18px;font-size:12px;line-height:2.1;color:#57506a;}
+  .side-note .tips b{color:var(--coral);font-weight:800;}
+
+  /* ===== 手机壳 ===== */
+  .phone{width:390px;height:844px;background:var(--cream);border-radius:50px;overflow:hidden;position:relative;flex-shrink:0;
+    box-shadow:0 40px 100px rgba(28,23,38,.35),0 0 0 11px #1C1726,0 0 0 13px #454052;}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:28px;background:#1C1726;border-radius:0 0 18px 18px;z-index:60;}
+  .statusbar{height:48px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 28px 4px;font-size:13px;font-weight:800;z-index:50;position:relative;}
+  .screen{position:absolute;top:48px;bottom:0;left:0;right:0;overflow:hidden;}
+  .page{position:absolute;inset:0;overflow-y:auto;display:none;padding-bottom:100px;scrollbar-width:none;background:var(--cream);}
+  .page::-webkit-scrollbar{display:none;}
+  .page.active{display:block;animation:pin .3s cubic-bezier(.2,.8,.2,1);}
+  @keyframes pin{from{opacity:0;transform:translateY(14px) scale(.99);}to{opacity:1;transform:none;}}
+
+  /* ===== 跑马灯 ===== */
+  .ticker{background:var(--violet);color:#fff;border-bottom:2px solid var(--ink);font-weight:900;font-size:10.5px;letter-spacing:1px;overflow:hidden;white-space:nowrap;padding:6px 0;}
+  .ticker .inner{display:inline-block;animation:tick 20s linear infinite;}
+  @keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* ===== 顶栏 ===== */
+  .top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px;}
+  .brand{display:flex;flex-direction:column;line-height:1;}
+  .brand b{font-size:22px;font-weight:900;letter-spacing:-1px;}
+  .brand b em{font-style:normal;color:var(--coral);}
+  .brand span{font-size:8px;font-weight:800;letter-spacing:3px;color:#8a84a0;margin-top:3px;}
+  .city-pick{display:flex;align-items:center;gap:6px;background:var(--paper);border:2px solid var(--ink);border-radius:99px;box-shadow:var(--sh-sm);padding:7px 12px;font-weight:900;font-size:12.5px;cursor:pointer;}
+  .city-pick:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .city-pick .dot{width:6px;height:6px;border-radius:99px;background:var(--coral);}
+  .city-pick svg{width:8px;height:8px;margin-top:1px;}
+  .top-right{display:flex;gap:8px;}
+  .icon-btn{width:34px;height:34px;border-radius:12px;background:var(--paper);border:2px solid var(--ink);box-shadow:var(--sh-sm);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;font-weight:900;}
+  .icon-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .lang-btn{width:auto;padding:0 12px;font-size:11px;letter-spacing:.5px;background:var(--sun);}
+
+  /* 搜索 */
+  .searchbar{margin:6px 18px 2px;background:var(--paper);border:2px solid var(--ink);border-radius:16px;box-shadow:var(--sh);display:flex;align-items:center;gap:8px;padding:11px 14px;color:#8a84a0;font-size:12.5px;cursor:pointer;font-weight:600;}
+
+  /* ===== 场景 chips（贴纸风）===== */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:14px 18px 8px;scrollbar-width:none;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex-shrink:0;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:99px;padding:8px 15px;font-size:12.5px;font-weight:800;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;}
+  .chip.on{background:var(--ink);color:var(--lime);box-shadow:3px 3px 0 var(--violet);}
+  .chip:active{transform:translate(2px,2px);}
+
+  /* ===== Bento ===== */
+  .bento{display:grid;grid-template-columns:1.65fr 1fr;gap:12px;margin:10px 18px;}
+  .hero{border-radius:24px;border:2px solid var(--ink);box-shadow:var(--sh);padding:20px;position:relative;overflow:hidden;min-height:200px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;color:#fff;}
+  .hero .bg-emoji{position:absolute;right:-16px;top:-14px;font-size:118px;opacity:.9;transform:rotate(-10deg);filter:drop-shadow(-6px 8px 0 rgba(0,0,0,.18));}
+  .hero .scene{font-size:9px;font-weight:900;letter-spacing:1.5px;padding:5px 11px;border-radius:99px;background:var(--paper);color:var(--ink);border:2px solid var(--ink);margin-bottom:auto;width:fit-content;transform:rotate(-3deg);}
+  .hero h2{font-size:19px;line-height:1.28;letter-spacing:-.4px;margin-bottom:7px;position:relative;text-shadow:0 2px 0 rgba(0,0,0,.22);}
+  .hero .meta{font-size:11px;opacity:.95;position:relative;font-weight:600;}
+  .hero .row{display:flex;justify-content:space-between;align-items:flex-end;position:relative;gap:8px;}
+  .hero .price{font-size:16px;font-weight:900;background:var(--sun);color:var(--ink);border:2px solid var(--ink);border-radius:99px;padding:5px 12px;box-shadow:2px 2px 0 var(--ink);white-space:nowrap;}
+  .bcol{display:flex;flex-direction:column;gap:12px;}
+  .bcard{border-radius:24px;border:2px solid var(--ink);box-shadow:var(--sh-sm);background:var(--paper);padding:14px;flex:1;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;}
+  .bcard:active,.hero:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .bcard .big{font-size:28px;font-weight:900;letter-spacing:-1.5px;}
+  .bcard p{font-size:10px;color:#8a84a0;line-height:1.5;font-weight:700;}
+  .bcard .stk{align-self:flex-end;font-size:9px;font-weight:900;border:2px solid var(--ink);border-radius:99px;padding:3px 9px;transform:rotate(2deg);}
+
+  /* ===== 区块标题 ===== */
+  .sec{display:flex;justify-content:space-between;align-items:baseline;margin:26px 18px 12px;}
+  .sec h3{font-size:18px;font-weight:900;letter-spacing:-.5px;}
+  .sec h3 em{font-style:normal;color:var(--violet);}
+  .sec h3 u{text-decoration:none;background:var(--lime);border-radius:6px;padding:0 5px;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+  .sec span{font-size:11px;color:#8a84a0;font-weight:800;cursor:pointer;}
+
+  /* ===== 横滑海报 ===== */
+  .rail{display:flex;gap:14px;overflow-x:auto;padding:4px 18px 10px;scrollbar-width:none;}
+  .rail::-webkit-scrollbar{display:none;}
+  .poster{flex-shrink:0;width:160px;border-radius:22px;overflow:hidden;background:var(--paper);border:2px solid var(--ink);box-shadow:var(--sh-sm);cursor:pointer;}
+  .poster:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .poster .art{height:126px;display:flex;align-items:center;justify-content:center;font-size:54px;position:relative;border-bottom:2px solid var(--ink);}
+  .poster .art .tix{position:absolute;top:8px;right:8px;background:var(--paper);border:2px solid var(--ink);color:var(--ink);font-size:9px;font-weight:900;padding:3px 8px;border-radius:99px;}
+  .poster .info{padding:10px 12px 12px;}
+  .poster .info b{display:block;font-size:12.5px;line-height:1.35;height:34px;overflow:hidden;letter-spacing:-.2px;}
+  .poster .info .host{font-size:10px;color:#8a84a0;font-weight:700;}
+  .poster .info .when{font-size:10px;font-weight:900;display:block;margin-top:5px;background:var(--cream);border-radius:8px;padding:3px 7px;}
+
+  /* ===== 列表行 ===== */
+  .rows{margin:0 18px;display:flex;flex-direction:column;gap:12px;}
+  .row-card{display:flex;gap:13px;background:var(--paper);border:2px solid var(--ink);border-radius:22px;box-shadow:var(--sh-sm);padding:12px;cursor:pointer;align-items:center;}
+  .row-card:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .row-art{width:64px;height:64px;border-radius:16px;border:2px solid var(--ink);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;}
+  .row-body{flex:1;min-width:0;}
+  .row-body b{display:block;font-size:13.5px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row-body span{font-size:10.5px;color:#8a84a0;display:block;margin-top:5px;font-weight:600;}
+  .row-side{text-align:right;flex-shrink:0;}
+  .row-side .p{font-size:15px;font-weight:900;}
+  .row-side .p small{font-size:9px;color:#8a84a0;font-weight:700;}
+  .row-side .c{display:inline-block;font-size:9px;font-weight:900;letter-spacing:.5px;margin-top:4px;border:2px solid var(--ink);border-radius:99px;padding:2px 8px;background:var(--cream);}
+
+  /* ===== TabBar（漂浮胶囊）===== */
+  .tabbar{position:absolute;bottom:14px;left:14px;right:14px;height:64px;background:var(--paper);border:2.5px solid var(--ink);border-radius:24px;box-shadow:5px 5px 0 var(--ink);display:flex;z-index:45;}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9.5px;color:#8a84a0;font-weight:900;cursor:pointer;letter-spacing:.3px;}
+  .tab svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;}
+  .tab.on{color:var(--ink);}
+  .tab.on .tab-blob{background:var(--lime);}
+  .tab-blob{border-radius:99px;padding:4px 11px;transition:background .18s;}
+  .tab.fab .tab-blob{background:var(--coral);color:#fff;padding:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:2px solid var(--ink);font-size:22px;margin-top:-26px;box-shadow:3px 3px 0 var(--ink);}
+  .tab.fab.on .tab-blob{background:var(--ink);color:var(--sun);}
+
+  /* ===== Sheet ===== */
+  .mask{position:absolute;inset:0;background:rgba(28,23,38,.5);z-index:80;display:none;}
+  .mask.show{display:block;animation:fin .2s;}
+  @keyframes fin{from{opacity:0}to{opacity:1}}
+  .sheet{position:absolute;bottom:0;left:0;right:0;background:var(--cream);border:2.5px solid var(--ink);border-bottom:none;border-radius:26px 26px 0 0;z-index:90;padding:18px 20px 30px;transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,.25,1);max-height:74%;overflow-y:auto;scrollbar-width:none;}
+  .sheet.show{transform:none;}
+  .sheet::-webkit-scrollbar{display:none;}
+  .handle{width:44px;height:5px;background:var(--ink);border-radius:99px;margin:0 auto 16px;opacity:.25;}
+  .sheet h3{font-size:18px;font-weight:900;margin-bottom:14px;letter-spacing:-.3px;}
+  .city-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .city-cell{border:2px solid var(--ink);background:var(--paper);border-radius:16px;padding:12px 4px;text-align:center;cursor:pointer;box-shadow:var(--sh-sm);}
+  .city-cell:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .city-cell b{display:block;font-size:13px;font-weight:900;}
+  .city-cell span{font-size:9px;color:#8a84a0;letter-spacing:1px;font-weight:800;}
+  .city-cell.on{background:var(--sun);box-shadow:3px 3px 0 var(--violet);}
+
+  /* ===== 详情 ===== */
+  .d-cover{height:252px;display:flex;align-items:center;justify-content:center;font-size:100px;position:relative;border-bottom:2.5px solid var(--ink);}
+  .d-cover .back,.d-cover .share{position:absolute;top:14px;width:38px;height:38px;background:var(--paper);border:2px solid var(--ink);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;z-index:5;box-shadow:var(--sh-sm);font-weight:900;}
+  .d-cover .back{left:14px;}
+  .d-cover .share{right:14px;width:auto;padding:0 13px;font-size:11.5px;font-weight:900;letter-spacing:.5px;}
+  .d-body{padding:20px 18px 14px;}
+  .d-tags{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;}
+  .d-tag{font-size:9.5px;font-weight:900;letter-spacing:1px;padding:5px 11px;border-radius:99px;border:2px solid var(--ink);}
+  .d-body h2{font-size:22px;font-weight:900;line-height:1.32;letter-spacing:-.5px;margin-bottom:16px;}
+  .d-body h2 u{text-decoration:none;background:var(--lime);border-radius:6px;padding:0 4px;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+  .d-info{background:var(--paper);border:2px solid var(--ink);border-radius:22px;box-shadow:var(--sh);padding:4px 16px;margin-bottom:16px;}
+  .d-info .li{display:flex;gap:12px;padding:13px 0;border-bottom:2px dashed #e5dfd2;font-size:12.5px;align-items:flex-start;}
+  .d-info .li:last-child{border-bottom:none;}
+  .d-info .li .ic{width:20px;text-align:center;flex-shrink:0;}
+  .d-info .li b{display:block;font-weight:800;}
+  .d-info .li span{color:#8a84a0;font-size:10px;display:block;margin-top:2px;font-weight:700;letter-spacing:.5px;}
+  .d-sec-t{font-size:11px;font-weight:900;letter-spacing:2px;color:var(--violet);margin:20px 0 10px;}
+  .lineup{display:flex;gap:9px;flex-wrap:wrap;}
+  .lineup .art{border:2px solid var(--ink);background:var(--paper);border-radius:16px;padding:10px 14px;text-align:center;cursor:pointer;box-shadow:var(--sh-sm);transform:rotate(-1deg);}
+  .lineup .art:nth-child(2n){transform:rotate(1.5deg);background:var(--cream);}
+  .lineup .art em{display:block;font-size:8.5px;color:#8a84a0;font-style:normal;letter-spacing:1.5px;margin-bottom:3px;font-weight:800;}
+  .lineup .art b{font-size:12px;}
+  .avatars{display:flex;align-items:center;}
+  .avatars .av{width:32px;height:32px;border-radius:99px;background:var(--paper);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:14px;margin-left:-9px;}
+  .avatars .av:first-child{margin-left:0;}
+  .avatars .more{margin-left:8px;font-size:10.5px;color:#8a84a0;font-weight:800;}
+  .join-cta{margin-top:14px;display:flex;align-items:center;justify-content:space-between;background:var(--cyan);border:2px solid var(--ink);border-radius:22px;box-shadow:var(--sh);padding:15px 16px;cursor:pointer;}
+  .join-cta:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .join-cta b{font-size:13px;}
+  .join-cta span{font-size:10px;display:block;margin-top:3px;font-weight:600;}
+  .join-cta .go{background:var(--ink);color:var(--lime);font-weight:900;font-size:12px;border-radius:99px;padding:7px 13px;}
+
+  /* 票种 */
+  .tickets{display:flex;flex-direction:column;gap:10px;}
+  .tix-opt{border:2px solid var(--ink);background:var(--paper);border-radius:18px;box-shadow:var(--sh-sm);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+  .tix-opt:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .tix-opt b{font-size:13px;display:block;}
+  .tix-opt span{font-size:10px;color:#8a84a0;display:block;margin-top:3px;font-weight:600;}
+  .tix-opt .p{font-size:16px;font-weight:900;color:var(--ink);}
+  .tix-opt.sel{background:var(--lime);box-shadow:3px 3px 0 var(--violet);}
+  .tix-opt .p em{font-style:normal;font-size:10px;color:#8a84a0;text-decoration:line-through;margin-right:5px;font-weight:700;}
+
+  .d-bottom{position:sticky;bottom:0;background:var(--cream);border-top:2.5px solid var(--ink);padding:12px 2px 16px;display:flex;align-items:center;justify-content:space-between;z-index:48;margin:8px -18px -14px;}
+  .d-bottom .tp{font-size:22px;font-weight:900;letter-spacing:-.5px;}
+  .d-bottom .tp small{font-size:10px;color:#8a84a0;font-weight:700;letter-spacing:0;}
+  .buy{background:var(--coral);color:#fff;border:2.5px solid var(--ink);border-radius:18px;box-shadow:var(--sh);padding:14px 36px;font-size:15px;font-weight:900;letter-spacing:1px;cursor:pointer;font-family:inherit;}
+  .buy:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink);}
+  .buy.ok{background:var(--ink);color:var(--lime);}
+
+  /* ===== 日历 ===== */
+  .date-rail{display:flex;gap:9px;overflow-x:auto;padding:14px 18px 6px;scrollbar-width:none;}
+  .date-rail::-webkit-scrollbar{display:none;}
+  .dcell{flex-shrink:0;width:56px;border:2px solid var(--ink);background:var(--paper);border-radius:18px;box-shadow:var(--sh-sm);padding:10px 0;text-align:center;cursor:pointer;}
+  .dcell:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .dcell b{display:block;font-size:16px;font-weight:900;}
+  .dcell span{font-size:9px;color:#8a84a0;letter-spacing:1px;font-weight:800;}
+  .dcell.on{background:var(--violet);}
+  .dcell.on b{color:#fff;}
+  .dcell.on span{color:var(--lime);}
+
+  /* ===== 票夹 ===== */
+  .etix{margin:0 18px 16px;border-radius:24px;border:2.5px solid var(--ink);background:var(--paper);box-shadow:var(--sh);overflow:hidden;position:relative;}
+  .etix:before,.etix:after{content:"";position:absolute;width:20px;height:20px;border-radius:99px;background:var(--cream);border:2.5px solid var(--ink);top:50%;transform:translateY(-50%);}
+  .etix:before{left:-12px;}
+  .etix:after{right:-12px;}
+  .etix .t-top{display:flex;gap:14px;padding:18px 16px 12px;border-bottom:2px dashed #e5dfd2;margin:0 8px;}
+  .etix .t-art{width:76px;height:76px;border-radius:18px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;}
+  .etix .t-body b{font-size:14.5px;display:block;letter-spacing:-.3px;line-height:1.35;}
+  .etix .t-body span{font-size:10.5px;color:#8a84a0;display:block;margin-top:5px;font-weight:600;}
+  .etix .t-body .st{display:inline-block;margin-top:8px;font-size:9px;font-weight:900;letter-spacing:1.5px;padding:4px 10px;border-radius:99px;border:2px solid var(--ink);background:var(--lime);}
+  .etix.used .t-body .st{background:#e5dfd2;}
+  .etix .t-bot{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;}
+  .etix .t-bot .tk{font-size:9.5px;color:#8a84a0;letter-spacing:1.5px;font-weight:800;}
+  .qr{width:46px;height:46px;border-radius:12px;border:2px solid var(--ink);background:
+    repeating-linear-gradient(0deg,var(--ink) 0 2.5px,transparent 2.5px 5px),
+    repeating-linear-gradient(90deg,var(--ink) 0 2.5px,transparent 2.5px 5px);position:relative;cursor:pointer;}
+  .qr::after{content:"";position:absolute;inset:34%;background:var(--coral);border-radius:4px;border:2px solid var(--ink);}
+  .etix.used{opacity:.6;}
+  .empty{text-align:center;padding:60px 40px;color:#8a84a0;font-size:12.5px;line-height:2;font-weight:600;}
+
+  /* ===== 我的 ===== */
+  .me-head{margin:16px 18px 0;background:var(--paper);border:2.5px solid var(--ink);border-radius:26px;box-shadow:var(--sh);padding:20px;display:flex;gap:14px;align-items:center;}
+  .me-av{width:64px;height:64px;border-radius:22px;border:2px solid var(--ink);background:linear-gradient(135deg,var(--sun),var(--coral));display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;}
+  .me-head h3{font-size:19px;font-weight:900;letter-spacing:-.3px;}
+  .me-head p{font-size:11px;color:#8a84a0;margin-top:4px;font-weight:600;}
+  .vibes{display:flex;gap:7px;margin:12px 18px 4px;flex-wrap:wrap;}
+  .vibe{font-size:10px;font-weight:900;border:2px solid var(--ink);border-radius:99px;padding:5px 12px;background:var(--paper);}
+  .vibe:nth-child(1){background:var(--lime);transform:rotate(-2deg);}
+  .vibe:nth-child(3){background:var(--pink);color:#fff;transform:rotate(1.5deg);}
+  .vibe:nth-child(4){background:var(--cyan);}
+  .me-stats{display:flex;margin:12px 18px;background:var(--paper);border:2px solid var(--ink);border-radius:24px;box-shadow:var(--sh-sm);padding:16px 0;}
+  .me-stats .s{flex:1;text-align:center;border-right:2px dashed #e5dfd2;}
+  .me-stats .s:last-child{border-right:none;}
+  .me-stats b{display:block;font-size:19px;font-weight:900;}
+  .me-stats b i{font-style:normal;color:var(--violet);}
+  .me-stats span{font-size:9.5px;color:#8a84a0;letter-spacing:1px;font-weight:800;}
+  .me-menu{margin:14px 18px;background:var(--paper);border:2px solid var(--ink);border-radius:24px;box-shadow:var(--sh-sm);overflow:hidden;}
+  .me-item{display:flex;align-items:center;gap:13px;padding:16px;border-bottom:2px dashed #e5dfd2;font-size:13.5px;font-weight:800;cursor:pointer;}
+  .me-item:last-child{border-bottom:none;}
+  .me-item:active{background:var(--cream);}
+  .me-item .mi{width:38px;height:38px;border-radius:13px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .me-item .ar{margin-left:auto;font-weight:900;}
+
+  .toast{position:absolute;bottom:96px;left:50%;transform:translateX(-50%) rotate(-1deg);background:var(--ink);color:var(--lime);font-weight:900;border-radius:14px;padding:12px 20px;font-size:12.5px;z-index:120;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--violet);}
+  .toast.show{opacity:1;}
+
+  /* ===== AI Chat ===== */
+  #page-chat{overflow:hidden;}
+  .chat-head{padding:16px 18px 10px;display:flex;align-items:center;gap:11px;border-bottom:2px solid var(--ink);background:var(--sun);}
+  .chat-ai-av{width:38px;height:38px;border-radius:14px;border:2px solid var(--ink);background:var(--ink);color:var(--lime);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+  .chat-head b{font-size:16px;font-weight:900;letter-spacing:-.3px;display:block;}
+  .chat-head span{font-size:9.5px;font-weight:800;color:#5c4a17;letter-spacing:1px;}
+  .chat-head .live{margin-left:auto;background:var(--paper);border:2px solid var(--ink);border-radius:99px;padding:4px 10px;font-size:9px;font-weight:900;letter-spacing:1px;}
+  #chatMsgs{position:absolute;top:79px;bottom:158px;left:0;right:0;overflow-y:auto;padding:16px 14px;scrollbar-width:none;display:flex;flex-direction:column;gap:12px;}
+  #chatMsgs::-webkit-scrollbar{display:none;}
+  .msg{display:flex;max-width:86%;}
+  .msg.me{align-self:flex-end;flex-direction:row-reverse;}
+  .msg .bubble{border:2px solid var(--ink);border-radius:18px;padding:11px 14px;font-size:13px;line-height:1.6;box-shadow:var(--sh-sm);white-space:pre-line;font-weight:600;}
+  .msg.bot .bubble{background:var(--paper);border-bottom-left-radius:6px;}
+  .msg.me .bubble{background:var(--ink);color:var(--lime);border-bottom-right-radius:6px;}
+  .msg.me .bubble img{display:block;width:150px;border-radius:12px;border:2px solid var(--lime);margin-top:4px;}
+  .msg .bubble.typing{display:flex;gap:5px;align-items:center;padding:14px 16px;}
+  .msg .bubble.typing span{width:7px;height:7px;border-radius:99px;background:var(--ink);animation:bl 1s infinite;}
+  .msg .bubble.typing span:nth-child(2){animation-delay:.18s;}
+  .msg .bubble.typing span:nth-child(3){animation-delay:.36s;}
+  @keyframes bl{0%,100%{opacity:.25;transform:translateY(0);}50%{opacity:1;transform:translateY(-3px);}}
+  .msg-time{font-size:8.5px;color:#b8b0a0;font-weight:700;margin-top:4px;letter-spacing:1px;}
+  .msg.bot .msg-time{text-align:left;}
+  .msg.me .msg-time{text-align:right;}
+  .chat-act{display:flex;gap:10px;align-items:center;background:var(--paper);border:2px solid var(--ink);border-radius:16px;box-shadow:var(--sh-sm);padding:9px 11px;cursor:pointer;margin-top:8px;width:100%;text-align:left;font-weight:600;}
+  .chat-act:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .chat-act .ca-art{width:44px;height:44px;border-radius:12px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .chat-act .ca-body{flex:1;min-width:0;}
+  .chat-act .ca-body b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .chat-act .ca-body span{font-size:10px;color:#8a84a0;display:block;margin-top:2px;}
+  .chat-act .ca-p{font-size:13px;font-weight:900;flex-shrink:0;}
+  .go-all-btn{display:inline-block;margin-top:8px;background:var(--lime);border:2px solid var(--ink);border-radius:99px;padding:6px 14px;font-size:11px;font-weight:900;cursor:pointer;box-shadow:2px 2px 0 var(--ink);}
+  .go-all-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  /* 识图/发布草稿卡 */
+  .draft-card{background:var(--paper);border:2px solid var(--ink);border-radius:18px;box-shadow:var(--sh);padding:13px;margin-top:8px;width:100%;}
+  .draft-card .dc-t{font-size:10px;font-weight:900;letter-spacing:2px;color:var(--violet);margin-bottom:9px;}
+  .draft-card .drow{display:flex;gap:8px;font-size:12px;padding:6px 0;border-bottom:2px dashed #e5dfd2;align-items:baseline;}
+  .draft-card .drow:last-of-type{border-bottom:none;}
+  .draft-card .drow label{flex-shrink:0;width:44px;font-size:9.5px;font-weight:900;color:#8a84a0;letter-spacing:1px;}
+  .draft-card .drow b{font-weight:800;flex:1;}
+  .draft-actions{display:flex;gap:8px;margin-top:11px;}
+  .draft-actions button{flex:1;border:2px solid var(--ink);border-radius:12px;padding:9px 0;font-size:12px;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:var(--sh-sm);}
+  .draft-actions button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .draft-actions .ok{background:var(--coral);color:#fff;}
+  .draft-actions .re{background:var(--paper);}
+  /* 快捷指令 + 输入条 */
+  .quick-chips{position:absolute;bottom:112px;left:0;right:0;display:flex;gap:7px;overflow-x:auto;padding:6px 14px;scrollbar-width:none;background:var(--cream);}
+  .quick-chips::-webkit-scrollbar{display:none;}
+  .qchip{flex-shrink:0;border:2px solid var(--ink);background:var(--paper);border-radius:99px;padding:7px 13px;font-size:11px;font-weight:800;cursor:pointer;}
+  .qchip:active{transform:translate(2px,2px);}
+  .chat-inputbar{position:absolute;bottom:0;left:0;right:0;padding:10px 14px 92px;background:var(--cream);display:flex;gap:9px;align-items:center;border-top:2px solid var(--ink);background:var(--paper);}
+  .chat-inputbar .cam{width:40px;height:40px;border-radius:14px;border:2px solid var(--ink);background:var(--sun);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;flex-shrink:0;}
+  .chat-inputbar .cam:active{transform:translate(2px,2px);}
+  .chat-inputbar input{flex:1;border:2px solid var(--ink);border-radius:14px;padding:11px 14px;font-size:13px;font-weight:600;background:var(--cream);outline:none;font-family:inherit;min-width:0;}
+  .chat-inputbar input::placeholder{color:#b8b0a0;}
+  .chat-inputbar .send{width:40px;height:40px;border-radius:14px;border:2px solid var(--ink);background:var(--coral);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-weight:900;}
+  .chat-inputbar .send:active{transform:translate(2px,2px);}
+  .chat-badge{position:absolute;top:-6px;right:-6px;background:var(--coral);color:#fff;border:2px solid var(--ink);border-radius:99px;font-size:8px;font-weight:900;padding:2px 6px;letter-spacing:1px;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="side-note">
+    <span class="tag">MINI PROGRAM · V3 REDESIGN</span>
+    <h1>Larky<em>GO</em><b>GO OUT · PLAY NOW</b></h1>
+    <p>原创 Neo-Pop 视觉：奶油底 × 粗描边 × 硬阴影 × 高饱和贴纸色。大胆、年轻、和任何现有活动小程序都不一样。</p>
+    <div class="tips">
+      ▸ 中间 <b>✦ AI</b> 聊天找活动 / 发活动<br>
+      ▸ 试试问「<b>本周有什么音乐活动</b>」<br>
+      ▸ 说「<b>我要发布活动</b>」进入向导<br>
+      ▸ 点 <b>📷 上传海报</b>，AI 自动识别发布<br>
+      ▸ 发布时输入任意类别 = <b>✨ 自定义</b><br>
+      ▸ <b>EN / 中</b> 切换 · 城市胶囊换 12 城<br>
+      ▸ 详情页选票种 · 购票后票夹出示
+    </div>
+  </div>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="statusbar"><span id="sbTime">16:35</span><span style="letter-spacing:2px;font-size:11px;">▮▮▮ ⌾ ⚡</span></div>
+    <div class="screen">
+
+      <!-- ========== 发现页 ========== -->
+      <div class="page active" id="page-discover">
+        <div class="ticker"><div class="inner" id="ticker"></div></div>
+        <div class="top">
+          <div class="brand"><b>Larky<em>GO</em></b><span>GO OUT · PLAY NOW</span></div>
+          <div class="top-right">
+            <div class="icon-btn lang-btn" onclick="toggleLang()" id="langBtn">EN</div>
+            <div class="icon-btn" onclick="toast(T().tSearch)">🔍</div>
+          </div>
+        </div>
+        <div style="padding:0 18px 4px;"><div class="city-pick" onclick="openSheet('city')">
+          <span class="dot"></span><span id="navCity">上海 SH</span>
+          <svg viewBox="0 0 10 10"><path d="M1 3l4 4 4-4" stroke="#1C1726" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+        </div></div>
+        <div class="searchbar" onclick="toast(T().tSearch)"><span>✦</span><span id="searchPh">搜活动 / 场地 / 艺人 / 搭子…</span></div>
+        <div class="chips" id="sceneChips"></div>
+        <div class="bento">
+          <div class="hero" id="heroCard">
+            <div class="bg-emoji" id="heroEmoji">🔊</div>
+            <div class="scene" id="heroScene">TECHNO</div>
+            <div class="row">
+              <div style="min-width:0;">
+                <h2 id="heroTitle"></h2>
+                <div class="meta" id="heroMeta"></div>
+              </div>
+              <div class="price" id="heroPrice"></div>
+            </div>
+          </div>
+          <div class="bcol">
+            <div class="bcard" onclick="goTab('cal')" style="background:var(--cyan);">
+              <div><div class="big" id="statCount">10</div></div>
+              <p id="statDesc">本周活动开票中</p>
+              <div class="stk" style="background:var(--sun);">THIS WEEK</div>
+            </div>
+            <div class="bcard" onclick="goTab('tickets')" style="background:var(--pink);color:#fff;">
+              <div><div class="big">🎫</div></div>
+              <p id="statTix" style="color:rgba(255,255,255,.85);">我的票夹 · 出示入场</p>
+              <div class="stk" style="background:#fff;">WALLET</div>
+            </div>
+          </div>
+        </div>
+        <div class="sec"><h3 id="railTitle">本周<u>热榜</u></h3><span onclick="goScene('all')" id="railMore">全部 →</span></div>
+        <div class="rail" id="rail"></div>
+        <div class="sec"><h3 id="listTitle">马上<em>开跳</em></h3><span id="listCity"></span></div>
+        <div class="rows" id="rows"></div>
+      </div>
+
+      <!-- ========== 场景列表页 ========== -->
+      <div class="page" id="page-list">
+        <div class="top">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="icon-btn" onclick="goTab('discover')">‹</div>
+            <b id="listPageTitle" style="font-size:18px;font-weight:900;letter-spacing:-.4px;">全部活动</b>
+          </div>
+          <div class="icon-btn lang-btn" onclick="toggleLang()" id="langBtn2">EN</div>
+        </div>
+        <div class="chips" id="subChips"></div>
+        <div class="rows" id="allRows" style="margin-top:8px;"></div>
+      </div>
+
+      <!-- ========== 详情页 ========== -->
+      <div class="page" id="page-detail"><div id="detailWrap"></div></div>
+
+      <!-- ========== 日历页 ========== -->
+      <div class="page" id="page-cal">
+        <div class="top">
+          <div class="brand"><b>日历</b><span>WHAT'S ON</span></div>
+          <div class="icon-btn lang-btn" onclick="toggleLang()" id="langBtn3">EN</div>
+        </div>
+        <div class="date-rail" id="dateRail"></div>
+        <div class="rows" id="calRows" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- ========== 票夹页 ========== -->
+      <div class="page" id="page-tickets">
+        <div class="top">
+          <div class="brand"><b>票夹</b><span>YOUR PASSES</span></div>
+          <div class="icon-btn lang-btn" onclick="toggleLang()" id="langBtn4">EN</div>
+        </div>
+        <div id="tixList"></div>
+      </div>
+
+      <!-- ========== 我的 ========== -->
+      <div class="page" id="page-me">
+        <div class="me-head">
+          <div class="me-av">🧑‍🎤</div>
+          <div><h3 id="meName">Alex Chen</h3><p id="meSub">📍 上海 · 🇺🇸 EN · 12 场活动记录</p></div>
+        </div>
+        <div class="vibes">
+          <span class="vibe"># TECHNO</span><span class="vibe"># 滑板</span><span class="vibe"># 火锅局</span><span class="vibe"># 脱口秀</span>
+        </div>
+        <div class="me-stats">
+          <div class="s"><b>12</b><span id="stJ">参加过</span></div>
+          <div class="s"><b>5</b><span id="stF">收藏</span></div>
+          <div class="s"><b>3</b><span id="stR">评价</span></div>
+          <div class="s"><b><i>2</i></b><span id="stH">发起</span></div>
+        </div>
+        <div class="me-menu" id="meMenu"></div>
+        <div style="text-align:center;color:#b8b0a0;font-size:10px;letter-spacing:2px;padding:18px 0 30px;font-weight:800;">LarkyGO · DEMO V4</div>
+      </div>
+
+      <!-- TabBar -->
+      <div class="tabbar">
+        <div class="tab on" id="tab-discover" onclick="goTab('discover')">
+          <div class="tab-blob"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg></div><span id="tHome">发现</span>
+        </div>
+        <div class="tab" id="tab-cal" onclick="goTab('cal')">
+          <div class="tab-blob"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><span id="tCal">日历</span>
+        </div>
+        <div class="tab fab" id="tab-fab" onclick="goTab('chat')"><div class="tab-blob">✦</div><span id="tFab">AI</span></div>
+        <div class="tab" id="tab-tickets" onclick="goTab('tickets')">
+          <div class="tab-blob"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2a2 2 0 000-4z"/><path d="M13 7v10" stroke-dasharray="2 3"/></svg></div><span id="tTix">票夹</span>
+        </div>
+        <div class="tab" id="tab-me" onclick="goTab('me')">
+          <div class="tab-blob"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg></div><span id="tMe">我的</span>
+        </div>
+      </div>
+
+      <!-- ========== AI 对话页 ========== -->
+      <div class="page" id="page-chat">
+        <div class="chat-head">
+          <div class="chat-ai-av">✦</div>
+          <div><b id="chatTitle">LarkyGO AI</b><span id="chatSub">聊天找活动 · 发活动 · 传海报</span></div>
+          <div class="live">● ONLINE</div>
+        </div>
+        <div id="chatMsgs"></div>
+        <div class="quick-chips" id="quickChips"></div>
+        <div class="chat-inputbar">
+          <div class="cam" onclick="$('imgInput').click()">📷</div>
+          <input id="chatInput" type="text" placeholder="问我活动，或说「发布活动」…" onkeydown="if(event.key==='Enter')sendChat()">
+          <div class="send" onclick="sendChat()">➤</div>
+        </div>
+        <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="onImgPick(event)">
+      </div>
+
+      <!-- 城市面板 -->
+      <div class="mask" id="cityMask" onclick="closeSheets()"></div>
+      <div class="sheet" id="citySheet">
+        <div class="handle"></div>
+        <h3 id="sheetCityT">换个城市开玩 🌏</h3>
+        <div class="city-grid" id="cityGrid"></div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ i18n ============ */
+const I18N={
+ zh:{
+  langBtn:"EN",tSearch:"搜索：演示占位 ✦",searchPh:"搜活动 / 场地 / 艺人 / 搭子…",
+  all:"全部",viewAll:"全部 →",inCity:"",
+  listTitle:"全部活动",sceneName:{sports:"运动 SPORTS",music:"音乐 MUSIC",outdoor:"游玩 OUTDOOR",shows:"表演 SHOWS",food:"美食 FOOD",custom:"自定义 OTHERS"},
+  sceneShort:{sports:"运动",music:"音乐",outdoor:"游玩",shows:"表演",food:"美食",custom:"自定义"},
+  subs:{all:"全部",skate:"滑板",tennis:"网球",livehouse:"Live House",techno:"Techno/House",hiking:"游山玩水",comedy:"脱口秀",musical:"音乐剧",magic:"魔术",dining:"聚餐"},
+  statDesc:"本周活动开票中",statTix:"我的票夹 · 出示入场",
+  people:"人已加入",left:"余票",per:"/人",
+  railTitle:"本周热榜",soonTitle:"马上开跳",
+  lineup:"阵容 LINE-UP",who:"谁会来",joinGroup:"加入活动群 · 找搭子",
+  dLabels:{date:"日期时间",venue:"场地",host:"主办方",tix:"票务",lang:"语言"},
+  tixTypes:{early:"早鸟票",pre:"预售票",door:"现场票"},
+  tixDesc:{early:"限量发售 · 售完即止",pre:"开场前在线购",door:"现场排队 · 数量有限"},
+  buy:"立即购票",bought:"已购票 ✓",buyOk:"🎫 购票成功！已放入票夹",cancelOk:"已取消",
+  selling:"售票中",
+  calBrand:"日历",tixBrand:"票夹",
+  weekday:["周日","周一","周二","周三","周四","周五","周六"],
+  emptyTix:"还没有票<br>去发现页逛逛 ✦",emptyCal:"这一天空空如也",
+  meName:"Alex Chen",stJ:"参加过",stF:"收藏",stR:"评价",stH:"发起",
+  meSub:"📍 上海 · 🇺🇸 EN · 12 场活动记录",
+  meMenu:[["🎟️","我的报名","booked"],["⭐","收藏的活动","fav"],["🔔","开票提醒","notif"],["🌍","语言设置","lang"],["🎧","帮助与客服","help"]],
+  meToast:{booked:"🎟️ 查看我的报名",fav:"⭐ 查看收藏",notif:"🔔 提醒设置（演示）",lang:"🌍 EN / 中文",help:"🎧 微信客服：LarkyGO-Support"},
+  sheetCityT:"换个城市开玩 🌏",
+  pickCityOk:"去 ",tixStatus:{valid:"有效",used:"已核销"},ticketNo:"NO.",
+  shareOk:"🔗 链接已复制",joinOk:"💬 已加入活动群",
+  emptyCity:"这座城市还没活动 · 期待发起人 ✦",emptySub:"该场景暂无活动",
+  heroSceneTxt:"热榜 TOP 1",
+  /* --- AI chat --- */
+  chatSub:"聊天找活动 · 发活动 · 传海报",
+  chatPh:"问我活动，或说「发布活动」…",
+  chatWelcome:"嗨，我是 LarkyGO AI ✦\n想玩点什么？我可以：\n\n🔍 直接问我——「本周有什么音乐活动」「北京有什么徒步」\n✦ 说「我要发布活动」，一步步帮你创建\n📷 点下方相机上传海报，我自动识别信息发布",
+  chatChips:["本周有什么活动？","推荐音乐活动","我要发布活动","上海有什么脱口秀？"],
+  chatFound:"帮你找到 {n} 场活动：",
+  chatNotFound:"这波没搜到 😅\n换个说法试试？比如「音乐」「徒步」「脱口秀」「火锅」",
+  chatGoAll:"看全部活动 →",
+  chatPubStart:"好嘞！发起活动 🎉\n先说说——活动叫什么名字？",
+  chatPubScene:"收到「{t}」✦\n属于哪个场景？运动 / 音乐 / 游玩 / 表演 / 美食\n💡 不属于这些？直接输入你的自定义类别（如「桌游」「市集」「观影」）",
+  chatPubCustom:"没问题！已创建自定义类别「{t}」✨\n活动什么时间举办？",
+  chatPubNameGen:"包在我身上 ✨ 就叫「{t}」！\n属于哪个场景？运动 / 音乐 / 游玩 / 表演 / 美食\n💡 不属于这些？直接输入你的自定义类别（如「桌游」「市集」「观影」）",
+  chatPubSceneAny:"帮你抽一个 ✨「{t}」！\n活动什么时间举办？",
+  chatPubWhenAny:"没问题，先记「{t}」，回头可改 ✦\n场地在哪里？（带上城市更好，如「上海 静安寺」）",
+  chatPubSceneRetry:"没认出来 🤔 再说一次？\n运动 / 音乐 / 游玩 / 表演 / 美食",
+  chatPubWhen:"时间定在什么时候？\n（比如：10月12日 周六 20:00）",
+  chatPubVenue:"场地在哪？\n（比如：上海 育音堂公园店）",
+  chatPubPrice:"票价多少？直接说数字就行～\n（比如：120）",
+  chatPubCancel:"已退出发布 ✦ 随时再喊我",
+  chatPubDone:"🎉 发布成功！已经出现在「发现」页热榜里，票种帮你配好早鸟/预售/现场三档。",
+  chatImgAsk:"把海报发给我就行 📷\n点输入框左边的相机按钮～",
+  chatImgRead:"识图完成 ✨ 从海报里读出了这些信息：",
+  chatImgOk:"确认发布",
+  chatImgRedo:"换一张",
+  chatDraftTitle:"✦ 识别结果",
+  chatPubSummary:"最后确认一下信息：",
+  chatYouHost:"你（发起人）"
+ },
+ en:{
+  langBtn:"中",tSearch:"Search: demo placeholder ✦",searchPh:"Search events / venues / artists / crew…",
+  all:"All",viewAll:"All →",inCity:"in",
+  listTitle:"All Events",sceneName:{sports:"SPORTS",music:"MUSIC",outdoor:"OUTDOOR",shows:"SHOWS",food:"FOOD",custom:"OTHERS"},
+  sceneShort:{sports:"Sports",music:"Music",outdoor:"Outdoor",shows:"Shows",food:"Food",custom:"Others"},
+  subs:{all:"All",skate:"Skateboarding",tennis:"Tennis",livehouse:"Live House",techno:"Techno/House",hiking:"Hiking & Nature",comedy:"Stand-up",musical:"Musicals",magic:"Magic",dining:"Dining"},
+  statDesc:"events on sale this week",statTix:"My tickets · show to enter",
+  people:"going",left:"left",per:"/pp",
+  railTitle:"This Week's <u>HOT</u>",soonTitle:"Starting <em>Soon</em>",
+  lineup:"LINE-UP",who:"Who's in",joinGroup:"Join group chat & find your crew",
+  dLabels:{date:"Date & Time",venue:"Venue",host:"Host",tix:"Tickets",lang:"Language"},
+  tixTypes:{early:"EARLY BIRD",pre:"PRESALE",door:"AT DOOR"},
+  tixDesc:{early:"Limited · while stocks last",pre:"Online · before doors",door:"Walk-up · very limited"},
+  buy:"GET TICKET",bought:"TICKETED ✓",buyOk:"🎫 Booked! Saved to wallet",cancelOk:"Cancelled",
+  selling:"ON SALE",
+  calBrand:"Calendar",tixBrand:"Tickets",
+  weekday:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+  emptyTix:"No tickets yet<br>go explore ✦",emptyCal:"Nothing on this day",
+  meName:"Alex Chen",stJ:"Joined",stF:"Saved",stR:"Reviews",stH:"Hosted",
+  meSub:"📍 Shanghai · 🇺🇸 · 12 events attended",
+  meMenu:[["🎟️","My Bookings","booked"],["⭐","Saved Events","fav"],["🔔","Sale Alerts","notif"],["🌍","Language","lang"],["🎧","Help & Support","help"]],
+  meToast:{booked:"🎟️ My bookings",fav:"⭐ Saved events",notif:"🔔 Alerts (demo)",lang:"🌍 EN / 中文",help:"🎧 WeChat: LarkyGO-Support"},
+  sheetCityT:"Pick a city 🌏",
+  pickCityOk:"Now in ",tixStatus:{valid:"VALID",used:"USED"},ticketNo:"NO.",
+  shareOk:"🔗 Link copied",joinOk:"💬 Joined group chat",
+  emptyCity:"No events here yet · be the host ✦",emptySub:"Nothing in this scene yet",
+  heroSceneTxt:"TOP PICK",
+  /* --- AI chat --- */
+  chatSub:"Chat to find & host events",
+  chatPh:"Ask me anything, or say \"host an event\"…",
+  chatWelcome:"Hey, I'm LarkyGO AI ✦\nWhat are you up for?\n\n🔍 Ask me — \"music events this week\", \"hiking in Beijing\"\n✦ Say \"I want to host\" and I'll guide you step by step\n📷 Tap the camera below, upload a poster — I'll extract everything",
+  chatChips:["Events this week?","Recommend music events","I want to host an event","Any comedy in Shanghai?"],
+  chatFound:"Found {n} events for you:",
+  chatNotFound:"Nothing matched 😅\nTry \"music\", \"hiking\", \"comedy\", \"hotpot\"…",
+  chatGoAll:"See all events →",
+  chatPubStart:"Let's do it! 🎉\nFirst — what's the event called?",
+  chatPubScene:"Got it: \"{t}\" ✦\nWhich scene? Sports / Music / Outdoor / Shows / Food\n💡 None of these? Just type your own category (e.g. \"Board Games\", \"Market\", \"Cinema\")",
+  chatPubCustom:"Cool! Custom category \"{t}\" created ✨\nWhen does it happen?",
+  chatPubNameGen:"Leave it to me ✨ Let's call it \"{t}\"!\nWhich scene? Sports / Music / Outdoor / Shows / Food\n💡 None of these? Just type your own category (e.g. \"Board Games\", \"Market\", \"Cinema\")",
+  chatPubSceneAny:"I'll pick one for you ✨ \"{t}\"!\nWhen does it happen?",
+  chatPubWhenAny:"Sure, pencilled in as \"{t}\" — editable later ✦\nWhere's the venue? (add the city, e.g. \"Jing'an, Shanghai\")",
+  chatPubSceneRetry:"Didn't catch that 🤔 One more time?\nSports / Music / Outdoor / Shows / Food",
+  chatPubWhen:"When is it?\n(e.g. Oct 12, Sat, 20:00)",
+  chatPubVenue:"Where's the venue?\n(e.g. Yuyintang Park, Shanghai)",
+  chatPubPrice:"Ticket price? Just a number~\n(e.g. 120)",
+  chatPubCancel:"Exited hosting ✦ Ping me anytime",
+  chatPubDone:"🎉 Published! It's live on Discover — I've set up Early/Presale/Door tiers for you.",
+  chatImgAsk:"Just send me the poster 📷\nTap the camera button next to the input~",
+  chatImgRead:"Scan complete ✨ Here's what I read from the poster:",
+  chatImgOk:"PUBLISH",
+  chatImgRedo:"Try another",
+  chatDraftTitle:"✦ EXTRACTED",
+  chatPubSummary:"Quick final check:",
+  chatYouHost:"You (host)"
+ }
+};
+let lang="zh";
+const T=()=>I18N[lang];
+
+/* ============ 数据 ============ */
+const CITIES=[
+ {id:"shanghai",zh:"上海",en:"Shanghai",py:"SH"},{id:"beijing",zh:"北京",en:"Beijing",py:"BJ"},
+ {id:"guangzhou",zh:"广州",en:"Guangzhou",py:"GZ"},{id:"shenzhen",zh:"深圳",en:"Shenzhen",py:"SZ"},
+ {id:"chengdu",zh:"成都",en:"Chengdu",py:"CD"},{id:"hangzhou",zh:"杭州",en:"Hangzhou",py:"HZ"},
+ {id:"nanjing",zh:"南京",en:"Nanjing",py:"NJ"},{id:"wuhan",zh:"武汉",en:"Wuhan",py:"WH"},
+ {id:"xian",zh:"西安",en:"Xi'an",py:"XA"},{id:"xiamen",zh:"厦门",en:"Xiamen",py:"XM"},
+ {id:"qingdao",zh:"青岛",en:"Qingdao",py:"QD"},{id:"sanya",zh:"三亚",en:"Sanya",py:"SY"}
+];
+let city="shanghai";
+const SCENES=[
+ {id:"sports",emoji:"🛹",subs:["skate","tennis"],chip:"#2FD4E0"},
+ {id:"music",emoji:"🎧",subs:["livehouse","techno"],chip:"#6C4DFF"},
+ {id:"outdoor",emoji:"⛰️",subs:["hiking"],chip:"#A8E829"},
+ {id:"shows",emoji:"🎭",subs:["comedy","musical","magic"],chip:"#FF5A36"},
+ {id:"food",emoji:"🍜",subs:["dining"],chip:"#FF6FA5"},
+ {id:"custom",emoji:"✨",subs:[],chip:"#FFC531"}
+];
+const sceneOf=id=>SCENES.find(s=>s.id===id);
+
+const ACTS=[
+ {city:"shanghai",cat:"music",sub:"techno",emoji:"🔊",grad:"linear-gradient(135deg,#8b7bff,#6C4DFF)",d:3,hm:"22:00",price:200,going:210,spots:40,hot:true,
+  zh:{t:"仓库派对 AFTERGLOW Vol.9",venue:"西岸 The Mansion",host:"AFTERGLOW",tag:"TECHNO"},
+  en:{t:"Warehouse Rave: AFTERGLOW Vol.9",venue:"The Mansion, West Bund",host:"AFTERGLOW",tag:"TECHNO"},
+  lineup:[["Tiehan","铁汉"],["Psyche","源识"],["Bu6b1e","泡泡"]]},
+ {city:"shanghai",cat:"music",sub:"livehouse",emoji:"🎸",grad:"linear-gradient(135deg,#b09aff,#8467ff)",d:2,hm:"20:30",price:150,going:118,spots:24,hot:true,
+  zh:{t:"独立摇滚之夜 · 不眠上海",venue:"育音堂公园店",host:"育音堂",tag:"LIVE"},
+  en:{t:"Indie Rock Night: Sleepless SH",venue:"Yuyintang Park",host:"Yuyintang",tag:"LIVE"},
+  lineup:[["Djang San","张江"],["Guests","嘉宾乐队"]]},
+ {city:"shanghai",cat:"sports",sub:"skate",emoji:"🛹",grad:"linear-gradient(135deg,#7ee8f2,#2FD4E0)",d:4,hm:"18:30",price:80,going:32,spots:15,hot:false,
+  zh:{t:"黄昏滑板局 · SIP 滑板公园",venue:"黄浦 SIP Skatepark",host:"沪上滑板社",tag:"SKATE"},
+  en:{t:"Sunset Skate Jam @ SIP",venue:"SIP Skatepark, Huangpu",host:"SH Skaters",tag:"SKATE"},
+  lineup:[["Open Session","自由滑行"],["Best Trick","大招赛"]]},
+ {city:"shanghai",cat:"sports",sub:"tennis",emoji:"🎾",grad:"linear-gradient(135deg,#c9f77e,#a8e829)",d:5,hm:"10:00",price:120,going:41,spots:6,hot:false,
+  zh:{t:"国际网球双打社交局",venue:"杨浦 江湾体育场",host:"沪上网球社",tag:"TENNIS"},
+  en:{t:"International Tennis Mixer",venue:"Jiangwan Sports Center",host:"SH Tennis Net",tag:"TENNIS"},
+  lineup:[["Doubles RR","双打循环"],["Coaching","教练陪练"]]},
+ {city:"shanghai",cat:"outdoor",sub:"hiking",emoji:"⛰️",grad:"linear-gradient(135deg,#c9f77e,#8fd435)",d:11,hm:"07:30",price:180,going:88,spots:20,hot:true,
+  zh:{t:"莫干山竹林徒步一日往返",venue:"浙江莫干山 · 人民广场集合",host:"山野玩家俱乐部",tag:"HIKE"},
+  en:{t:"Moganshan Bamboo Forest Hike",venue:"Moganshan · meet @ People's Sq.",host:"Trailblazers CN",tag:"HIKE"},
+  lineup:[["Trail A","轻松线"],["Trail B","进阶线"]]},
+ {city:"shanghai",cat:"shows",sub:"comedy",emoji:"🎤",grad:"linear-gradient(135deg,#ff9d80,#FF5A36)",d:8,hm:"20:00",price:120,going:96,spots:12,hot:false,
+  zh:{t:"英文脱口秀 · Kung Fu Komedy",venue:"静安 Cages",host:"KFK 喜剧",tag:"COMEDY"},
+  en:{t:"Stand-up: Kung Fu Komedy",venue:"Cages, Jing'an",host:"KFK Comedy",tag:"COMEDY"},
+  lineup:[["MC Alex","主持"],["3 Openers","三组开场"]]},
+ {city:"shanghai",cat:"shows",sub:"musical",emoji:"🎭",grad:"linear-gradient(135deg,#ff9dc0,#FF6FA5)",d:17,hm:"19:15",price:380,going:230,spots:30,hot:true,
+  zh:{t:"《悲惨世界》选段音乐会",venue:"上海大剧院",host:"SSO Live",tag:"MUSICAL"},
+  en:{t:"Les Misérables Highlights in Concert",venue:"Shanghai Grand Theatre",host:"SSO Live",tag:"MUSICAL"},
+  lineup:[["Orchestra","现场乐团"],["Soloists","独唱家"]]},
+ {city:"shanghai",cat:"shows",sub:"magic",emoji:"🎩",grad:"linear-gradient(135deg,#ffd97e,#FFC531)",d:9,hm:"19:30",price:160,going:64,spots:18,hot:false,
+  zh:{t:"近景魔术之夜 · 纸牌屋",venue:"Mansion 酒店酒廊",host:"上海魔术圈",tag:"MAGIC"},
+  en:{t:"Close-up Magic: House of Cards",venue:"The Mansion lounge",host:"SH Magic Circle",tag:"MAGIC"},
+  lineup:[["Card Table","纸牌桌"],["Mind Reading","读心术"]]},
+ {city:"shanghai",cat:"food",sub:"dining",emoji:"🥟",grad:"linear-gradient(135deg,#ff9db5,#FF6FA5)",d:4,hm:"17:00",price:98,going:27,spots:10,hot:false,
+  zh:{t:"包饺子社交晚餐",venue:"黄浦 老码头",host:"寻味上海",tag:"FOOD"},
+  en:{t:"Dumpling Making Social Dinner",venue:"Cool Docks, Huangpu",host:"Taste of SH",tag:"FOOD"},
+  lineup:[["DIY Table","动手桌"],["Sauce Lab","蘸料实验室"]]},
+ {city:"shanghai",cat:"food",sub:"dining",emoji:"🍲",grad:"linear-gradient(135deg,#ffb08a,#ff7a45)",d:5,hm:"18:30",price:128,going:19,spots:8,hot:false,
+  zh:{t:"川味火锅之夜 🔥",venue:"人民广场 海底捞",host:"嗜辣星人",tag:"HOTPOT"},
+  en:{t:"Spicy Sichuan Hotpot Night 🔥",venue:"Haidilao, People's Sq.",host:"Chili Heads SH",tag:"HOTPOT"},
+  lineup:[["Mild Table","微辣桌"],["Hell Table","地狱辣桌"]]},
+ {city:"beijing",cat:"music",sub:"techno",emoji:"🔊",grad:"linear-gradient(135deg,#8b7bff,#6C4DFF)",d:4,hm:"22:00",price:180,going:185,spots:35,hot:true,
+  zh:{t:"地下 House 之夜 · 鼓楼律动",venue:"鼓楼 朝阳洞酒吧",host:"Gulou Grooves",tag:"HOUSE"},
+  en:{t:"Underground House: Gulou Grooves",venue:"Zhaoyang Cave, Gulou",host:"Gulou Grooves",tag:"HOUSE"},
+  lineup:[["Viene","律动使者"],["Ting","联觉治疗师"],["Jay D","声音构筑师"]]},
+ {city:"beijing",cat:"music",sub:"livehouse",emoji:"🎸",grad:"linear-gradient(135deg,#b09aff,#8467ff)",d:2,hm:"21:00",price:180,going:140,spots:30,hot:false,
+  zh:{t:"后摇现场 · Djang San 及嘉宾",venue:"五道营 School Bar",host:"School Bar",tag:"LIVE"},
+  en:{t:"Post-Rock Live: Djang San + Guests",venue:"School Bar, Wudaoying",host:"School Bar",tag:"LIVE"},
+  lineup:[["Djang San","张江"],["Guest Band","嘉宾"]]},
+ {city:"beijing",cat:"outdoor",sub:"hiking",emoji:"🍁",grad:"linear-gradient(135deg,#ffd97e,#ffa53d)",d:11,hm:"07:00",price:150,going:102,spots:25,hot:true,
+  zh:{t:"慕田峪长城金秋徒步",venue:"慕田峪 · 东直门集合",host:"北京行山团",tag:"HIKE"},
+  en:{t:"Mutianyu Great Wall Autumn Hike",venue:"Mutianyu · meet @ Dongzhimen",host:"Hike & Seek BJ",tag:"HIKE"},
+  lineup:[["Cable Car","缆车组"],["Full Trail","全程徒步组"]]},
+ {city:"beijing",cat:"shows",sub:"comedy",emoji:"🎤",grad:"linear-gradient(135deg,#ff9d80,#FF5A36)",d:7,hm:"20:00",price:150,going:88,spots:14,hot:false,
+  zh:{t:"双语脱口秀 · 北京人儿",venue:"三里屯 老书虫",host:"Comedy Club CN",tag:"COMEDY"},
+  en:{t:"Bilingual Comedy: The Beijingers",venue:"The Bookworm, Sanlitun",host:"Comedy Club CN",tag:"COMEDY"},
+  lineup:[["EN Set","英文组"],["CN Set","中文组"]]},
+ {city:"beijing",cat:"food",sub:"dining",emoji:"🦆",grad:"linear-gradient(135deg,#ffb08a,#ff7a45)",d:4,hm:"18:00",price:158,going:31,spots:12,hot:false,
+  zh:{t:"烤鸭晚餐 + 胡同漫步",venue:"西城 四合瓦院",host:"老北京味道",tag:"FOOD"},
+  en:{t:"Peking Duck Dinner + Hutong Walk",venue:"Sihewan, Xicheng",host:"Old BJ Bites",tag:"FOOD"},
+  lineup:[["Roast Table","烤鸭桌"],["Hutong Tour","胡同导览"]]},
+ {city:"beijing",cat:"sports",sub:"skate",emoji:"🛹",grad:"linear-gradient(135deg,#7ee8f2,#2FD4E0)",d:11,hm:"09:00",price:70,going:25,spots:18,hot:false,
+  zh:{t:"长城滑板之旅 + 烧烤",venue:"黄花城水长城",host:"北京滑板小队",tag:"SKATE"},
+  en:{t:"Great Wall Skate Trip + BBQ",venue:"Huanghuacheng",host:"BJ Skate Crew",tag:"SKATE"},
+  lineup:[["Skate Park","板场"],["BBQ Pit","烧烤"]]},
+ {city:"beijing",cat:"sports",sub:"tennis",emoji:"🎾",grad:"linear-gradient(135deg,#c9f77e,#a8e829)",d:5,hm:"09:00",price:100,going:33,spots:8,hot:false,
+  zh:{t:"朝阳周日网球社交局",venue:"朝阳体育中心",host:"京城球友会",tag:"TENNIS"},
+  en:{t:"Sunday Tennis Social · Chaoyang",venue:"Chaoyang Sports Park",host:"BJ Tennis Buddies",tag:"TENNIS"},
+  lineup:[["Round Robin","循环赛"]]},
+ {city:"chengdu",cat:"music",sub:"livehouse",emoji:"🎸",grad:"linear-gradient(135deg,#b09aff,#8467ff)",d:2,hm:"20:00",price:140,going:95,spots:26,hot:true,
+  zh:{t:"成都独立音乐夜 @ NUSPACE",venue:"玉林 NUSPACE",host:"NUSPACE",tag:"LIVE"},
+  en:{t:"Chengdu Indie Night @ NUSPACE",venue:"NUSPACE, Yulin",host:"NUSPACE",tag:"LIVE"},
+  lineup:[["Local Heroes","本地英雄"],["Guest","嘉宾"]]},
+ {city:"chengdu",cat:"food",sub:"dining",emoji:"🌶️",grad:"linear-gradient(135deg,#ff9d80,#FF5A36)",d:4,hm:"18:00",price:88,going:24,spots:10,hot:true,
+  zh:{t:"成都街头小吃扫街局",venue:"建设路夜市",host:"成都吃货团",tag:"FOOD"},
+  en:{t:"Sichuan Street Food Crawl",venue:"Jianshe Rd Night Market",host:"CDO Foodies",tag:"FOOD"},
+  lineup:[["6 Stops","六站打卡"]]},
+ {city:"chengdu",cat:"outdoor",sub:"hiking",emoji:"🐼",grad:"linear-gradient(135deg,#c9f77e,#8fd435)",d:5,hm:"07:30",price:160,going:76,spots:22,hot:false,
+  zh:{t:"青城山徒步洗肺之旅",venue:"青城山 · 成都东站集合",host:"熊猫步道俱乐部",tag:"HIKE"},
+  en:{t:"Mount Qingcheng Nature Hike",venue:"Qingchengshan · East Stn.",host:"Panda Trails",tag:"HIKE"},
+  lineup:[["Front Mtn.","前山"],["Back Mtn.","后山"]]},
+ {city:"chengdu",cat:"sports",sub:"skate",emoji:"🛹",grad:"linear-gradient(135deg,#7ee8f2,#2FD4E0)",d:4,hm:"16:00",price:60,going:28,spots:16,hot:false,
+  zh:{t:"成都滑板聚会 · 新浪公园",venue:"高新 新浪滑板公园",host:"CD 滑板社",tag:"SKATE"},
+  en:{t:"Chengdu Skate Meet @ New Wave",venue:"New Wave Park, Gaoxin",host:"CD Skate Fam",tag:"SKATE"},
+  lineup:[["Open Session","自由滑行"]]},
+ {city:"shenzhen",cat:"music",sub:"techno",emoji:"🔊",grad:"linear-gradient(135deg,#8b7bff,#6C4DFF)",d:4,hm:"21:00",price:190,going:160,spots:30,hot:true,
+  zh:{t:"天台 Techno · 华侨城创意园",venue:"南山 华侨城创意园",host:"SZ Underground",tag:"TECHNO"},
+  en:{t:"Rooftop Techno: OCT-Loft",venue:"OCT-Loft, Nanshan",host:"SZ Underground",tag:"TECHNO"},
+  lineup:[["Terrace","天台"],["Warehouse","仓库"]]},
+ {city:"shenzhen",cat:"outdoor",sub:"hiking",emoji:"🌊",grad:"linear-gradient(135deg,#7ee8f2,#2FD4E0)",d:5,hm:"08:00",price:140,going:81,spots:24,hot:false,
+  zh:{t:"东涌海岸线徒步",venue:"大鹏半岛 · 车公庙集合",host:"深圳徒盟",tag:"HIKE"},
+  en:{t:"Dongchong Coastal Trail Hike",venue:"Dapeng · Chegongmiao meet",host:"SZ Hikers",tag:"HIKE"},
+  lineup:[["Coast Line","海岸线"],["Beach End","沙滩终点"]]},
+ {city:"shenzhen",cat:"sports",sub:"tennis",emoji:"🎾",grad:"linear-gradient(135deg,#c9f77e,#a8e829)",d:4,hm:"09:30",price:110,going:29,spots:9,hot:false,
+  zh:{t:"深圳湾网球社交局",venue:"深圳湾体育中心",host:"深网球友会",tag:"TENNIS"},
+  en:{t:"Shenzhen Bay Tennis Social",venue:"SZ Bay Sports Center",host:"SZ Tennis Meetup",tag:"TENNIS"},
+  lineup:[["Sea View Courts","海景球场"]]},
+ {city:"guangzhou",cat:"food",sub:"dining",emoji:"🍵",grad:"linear-gradient(135deg,#c9f77e,#8fd435)",d:5,hm:"10:30",price:108,going:26,spots:12,hot:true,
+  zh:{t:"广式早茶午宴 + 珠江漫步",venue:"荔湾 广州酒家",host:"食在广州",tag:"DIM SUM"},
+  en:{t:"Cantonese Dim Sum + Pearl River Walk",venue:"Guangzhou Restaurant, Liwan",host:"Canton Bites",tag:"DIM SUM"},
+  lineup:[["Morning Tea","早茶桌"]]},
+ {city:"guangzhou",cat:"shows",sub:"musical",emoji:"🎭",grad:"linear-gradient(135deg,#ff9dc0,#FF6FA5)",d:17,hm:"19:30",price:320,going:150,spots:28,hot:false,
+  zh:{t:"音乐剧《猫》广州巡演",venue:"广州大剧院",host:"GH 音乐剧",tag:"MUSICAL"},
+  en:{t:"Musical: CATS Guangzhou Tour",venue:"Guangzhou Opera House",host:"GH Musical",tag:"MUSICAL"},
+  lineup:[["World Tour Cast","巡演卡司"]]},
+ {city:"guangzhou",cat:"music",sub:"livehouse",emoji:"🎸",grad:"linear-gradient(135deg,#b09aff,#8467ff)",d:2,hm:"20:30",price:130,going:87,spots:22,hot:false,
+  zh:{t:"粤语摇滚之夜 @ SD Livehouse",venue:"海珠 SD Livehouse",host:"SD Live",tag:"LIVE"},
+  en:{t:"Canton Rock Night @ SD",venue:"SD Livehouse, Haizhu",host:"SD Live",tag:"LIVE"},
+  lineup:[["3 Bands","三支乐队"]]},
+ {city:"hangzhou",cat:"outdoor",sub:"hiking",emoji:"🚣",grad:"linear-gradient(135deg,#c9f77e,#8fd435)",d:11,hm:"06:00",price:170,going:92,spots:20,hot:true,
+  zh:{t:"西湖日出徒步 + 船上早午餐",venue:"北高峰 · 西湖",host:"杭州户外实验室",tag:"HIKE"},
+  en:{t:"West Lake Sunrise + Boat Brunch",venue:"Beigaofeng · West Lake",host:"HZ Outdoor Lab",tag:"HIKE"},
+  lineup:[["Sunrise Group","日出组"],["Boat Brunch","游船早午餐"]]},
+ {city:"hangzhou",cat:"music",sub:"techno",emoji:"🔊",grad:"linear-gradient(135deg,#8b7bff,#6C4DFF)",d:11,hm:"15:00",price:160,going:98,spots:26,hot:false,
+  zh:{t:"湖畔 House 派对 · 千岛湖站",venue:"千岛湖 · 杭州东站集合",host:"西湖律动",tag:"HOUSE"},
+  en:{t:"Lakeside House: Qiandao Edition",venue:"Qiandao Lake · East Stn.",host:"West Lake Groove",tag:"HOUSE"},
+  lineup:[["Day Stage","日间舞台"],["Sunset Set","日落场"]]},
+ {city:"xiamen",cat:"outdoor",sub:"hiking",emoji:"🏝️",grad:"linear-gradient(135deg,#7ee8f2,#2FD4E0)",d:11,hm:"08:30",price:150,going:47,spots:18,hot:false,
+  zh:{t:"厦门环岛骑行 + 海岸徒步",venue:"环岛路 · 厦门",host:"厦门海岛社",tag:"BIKE+HIKE"},
+  en:{t:"Xiamen Coastal Cycling + Hike",venue:"Huandao Rd, Xiamen",host:"XM Island Club",tag:"BIKE+HIKE"},
+  lineup:[["Cruise Ride","休闲骑"],["Fast Peloton","竞速组"]]},
+ {city:"sanya",cat:"outdoor",sub:"hiking",emoji:"🌴",grad:"linear-gradient(135deg,#ffd97e,#ffa53d)",d:12,hm:"08:00",price:200,going:38,spots:16,hot:false,
+  zh:{t:"三亚浮潜 + 雨林穿越",venue:"蜈支洲岛 · 三亚",host:"山海三亚",tag:"WATER"},
+  en:{t:"Sanya Snorkeling + Rainforest Trek",venue:"Wuzhizhou Island",host:"Sanya Sea&Trail",tag:"WATER"},
+  lineup:[["Snorkel","浮潜组"],["Jungle","丛林组"]]},
+ {city:"xian",cat:"shows",sub:"magic",emoji:"🎩",grad:"linear-gradient(135deg,#ffd97e,#FFC531)",d:11,hm:"19:00",price:130,going:52,spots:20,hot:false,
+  zh:{t:"大唐魔术晚宴秀",venue:"大唐不夜城 · 西安",host:"长安夜宴",tag:"MAGIC"},
+  en:{t:"Tang Dynasty Magic Dinner Show",venue:"Datang Everbright City",host:"Chang'an Nights",tag:"MAGIC"},
+  lineup:[["Stage Magic","舞台魔术"],["Close-up","近景魔术"]]},
+ {city:"wuhan",cat:"sports",sub:"skate",emoji:"🛹",grad:"linear-gradient(135deg,#7ee8f2,#2FD4E0)",d:4,hm:"17:00",price:60,going:22,spots:14,hot:false,
+  zh:{t:"武汉江滩滑板局",venue:"汉口江滩公园",host:"武汉滑板社",tag:"SKATE"},
+  en:{t:"Wuhan Riverside Skate Session",venue:"Hankou Jiangtan Park",host:"WH Skate",tag:"SKATE"},
+  lineup:[["Open Session","自由滑行"]]},
+ {city:"nanjing",cat:"shows",sub:"comedy",emoji:"🎤",grad:"linear-gradient(135deg,#ff9d80,#FF5A36)",d:9,hm:"20:00",price:110,going:60,spots:15,hot:false,
+  zh:{t:"南京英文脱口秀之夜",venue:"玄武 1912 街区",host:"NJ Laughs",tag:"COMEDY"},
+  en:{t:"English Comedy Night Nanjing",venue:"1912 Bar St, Xuanwu",host:"NJ Laughs",tag:"COMEDY"},
+  lineup:[["Open Mic","开放麦"]]},
+ {city:"qingdao",cat:"food",sub:"dining",emoji:"🍺",grad:"linear-gradient(135deg,#ffb08a,#ff7a45)",d:4,hm:"18:30",price:118,going:35,spots:14,hot:false,
+  zh:{t:"青岛啤酒 + 海鲜大餐",venue:"市南 劈柴院",host:"青岛吃喝团",tag:"BEER"},
+  en:{t:"Tsingtao Beer & Seafood Feast",venue:"Pichaiyuan, Shinan",host:"QD Eats & Ales",tag:"BEER"},
+  lineup:[["Beer Garden","啤酒花园"]]},
+ {city:"shanghai",cat:"custom",sub:"custom",emoji:"🎲",grad:"linear-gradient(135deg,#ffe08a,#FFC531)",d:5,hm:"19:30",price:80,going:26,spots:10,hot:false,
+  zh:{t:"桌游 & 剧本杀之夜",venue:"静安 Board Game Bar",host:"Dice & Chill",tag:"BOARD GAMES"},
+  en:{t:"Board Games & Script Murder Night",venue:"Board Game Bar, Jing'an",host:"Dice & Chill",tag:"BOARD GAMES"},
+  lineup:[["Werewolf","狼人杀"],["Script","剧本杀"]]},
+ {city:"beijing",cat:"custom",sub:"custom",emoji:"💬",grad:"linear-gradient(135deg,#ffd76e,#f5a623)",d:2,hm:"15:00",price:50,going:41,spots:15,hot:false,
+  zh:{t:"中英语言交换下午茶",venue:"朝阳 The Corner Café",host:"Mandarin Mates",tag:"LANGUAGE EXCHANGE"},
+  en:{t:"CN-EN Language Exchange Tea",venue:"The Corner Café, Chaoyang",host:"Mandarin Mates",tag:"LANGUAGE EXCHANGE"},
+  lineup:[["Free Talk","自由聊"],["Games","破冰游戏"]]}
+];
+
+/* ============ 状态 ============ */
+let scene="all",sub="all",detailAct=null,tixSel="pre",calDay=null;
+const myTickets=[];let tixSeq=2026;
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/'/g,"\\'");
+const cityOf=id=>CITIES.find(c=>c.id===id);
+const T0=new Date();
+function fmtDate(a){const d=new Date(T0.getTime()+a.d*86400000);return `${d.getMonth()+1}/${d.getDate()} ${T().weekday[d.getDay()]} ${a.hm}`;}
+function acts(){return ACTS.filter(a=>a.city===city);}
+
+/* ============ 渲染 ============ */
+function renderChips(){
+  const t=T();
+  let h=`<div class="chip ${scene==='all'?'on':''}" onclick="pickScene('all')">✦ ${t.all}</div>`;
+  h+=SCENES.map(s=>`<div class="chip ${scene===s.id?'on':''}" onclick="pickScene('${s.id}')">${s.emoji} ${t.sceneShort[s.id]}</div>`).join("");
+  $("sceneChips").innerHTML=h;
+}
+function renderHero(){
+  const list=acts(),t=T();
+  const pool=scene!=="all"?list.filter(x=>x.cat===scene):list;
+  const a=pool.find(x=>x.hot)||pool[0];
+  if(!a){$("heroCard").style.display="none";$("statCount").textContent="0";return;}
+  $("heroCard").style.display="";
+  const L=a[lang];
+  $("heroEmoji").textContent=a.emoji;
+  $("heroScene").textContent=t.heroSceneTxt+" · "+L.tag;
+  $("heroTitle").textContent=L.t;
+  $("heroMeta").textContent=fmtDate(a)+" · "+L.venue+" · "+a.going+" "+t.people;
+  $("heroPrice").textContent="¥"+a.price;
+  $("heroCard").style.background=a.grad;
+  $("heroCard").onclick=()=>openDetail(a.en.t);
+  $("statCount").textContent=list.length;
+}
+function posterCard(a){
+  const L=a[lang];
+  return `<div class="poster" onclick="openDetail('${esc(a.en.t)}')">
+    <div class="art" style="background:${a.grad}">${a.emoji}<span class="tix">${a.spots} ${T().left}</span></div>
+    <div class="info"><b>${L.t}</b><span class="host">${L.host}</span><span class="when">▸ ${fmtDate(a)}</span></div>
+  </div>`;
+}
+function rowCard(a){
+  const L=a[lang];
+  return `<div class="row-card" onclick="openDetail('${esc(a.en.t)}')">
+    <div class="row-art" style="background:${a.grad}">${a.emoji}</div>
+    <div class="row-body"><b>${L.t}</b><span>📍 ${L.venue} · ${a.going} ${T().people}</span></div>
+    <div class="row-side"><div class="p">¥${a.price}<small> ${T().per}</small></div><div class="c" style="background:${sceneOf(a.cat).chip};">${L.tag}</div></div>
+  </div>`;
+}
+function renderDiscover(){
+  const t=T(),list=acts();
+  const hot=list.filter(a=>a.hot);
+  const soon=[...list].sort((x,y)=>x.d-y.d).slice(0,6);
+  $("rail").innerHTML=hot.length?hot.map(posterCard).join(""):`<div class="empty">${t.emptySub}</div>`;
+  $("rows").innerHTML=soon.length?soon.map(rowCard).join(""):`<div class="empty">${t.emptyCity}</div>`;
+  renderHero();
+  const cn=lang==='zh'?cityOf(city).zh:cityOf(city).en;
+  $("listCity").textContent=(t.inCity+" "+cn).trim();
+  $("railTitle").innerHTML=lang==='zh'?`本周<u>热榜</u>`:t.railTitle;
+  $("listTitle").innerHTML=lang==='zh'?`马上<em>开跳</em>`:t.soonTitle;
+}
+function renderListPage(){
+  const t=T();
+  $("listPageTitle").textContent=scene==="all"?t.listTitle:t.sceneName[scene];
+  let chips=`<div class="chip ${sub==='all'?'on':''}" onclick="pickSub('all')">${t.all}</div>`;
+  if(scene!=="all") chips+=sceneOf(scene).subs.map(s=>`<div class="chip ${sub===s?'on':''}" onclick="pickSub('${s}')">${t.subs[s]}</div>`).join("");
+  $("subChips").innerHTML=chips;
+  const list=acts().filter(a=>scene==="all"||a.cat===scene).filter(a=>sub==="all"||a.sub===sub).sort((x,y)=>x.d-y.d);
+  $("allRows").innerHTML=list.length?list.map(rowCard).join(""):`<div class="empty">${t.emptySub}</div>`;
+}
+function renderCal(){
+  const t=T();
+  const days=[...new Set(acts().map(a=>a.d))].sort((a,b)=>a-b);
+  if(!days.includes(calDay)) calDay=days[0]??null;
+  $("dateRail").innerHTML=days.map(d=>{
+    const dt=new Date(T0.getTime()+d*86400000);
+    return `<div class="dcell ${calDay===d?'on':''}" onclick="pickCalDay(${d})"><b>${dt.getDate()}</b><span>${t.weekday[dt.getDay()]}</span></div>`;
+  }).join("");
+  const list=calDay==null?[]:acts().filter(a=>a.d===calDay);
+  $("calRows").innerHTML=list.length?list.map(rowCard).join(""):`<div class="empty">${t.emptyCal}</div>`;
+}
+function renderTickets(){
+  const t=T();
+  if(!myTickets.length){$("tixList").innerHTML=`<div class="empty">🎫<br>${t.emptyTix}</div>`;return;}
+  $("tixList").innerHTML=myTickets.map(tk=>{
+    const a=tk.act,L=a[lang];
+    return `<div class="etix ${tk.used?'used':''}">
+      <div class="t-top">
+        <div class="t-art" style="background:${a.grad}">${a.emoji}</div>
+        <div class="t-body"><b>${L.t}</b><span>${fmtDate(a)} · ${L.venue}</span>
+        <span class="st">${t.tixTypes[tk.type]} · ${tk.used?t.tixStatus.used:t.tixStatus.valid}</span></div>
+      </div>
+      <div class="t-bot"><span class="tk">LarkyGO ${t.ticketNo} ${tk.no}</span><div class="qr" onclick="toast('${tk.used?t.tixStatus.used:'✅ 核销成功（演示）'}')"></div></div>
+    </div>`;
+  }).join("");
+}
+function renderMe(){
+  const t=T();
+  $("meMenu").innerHTML=t.meMenu.map(m=>`<div class="me-item" onclick="toast(T().meToast.${m[2]})"><div class="mi" style="background:${m[0]==='🎟️'?'var(--lime)':m[0]==='⭐'?'var(--sun)':m[0]==='🔔'?'var(--cyan)':m[0]==='🌍'?'var(--pink)':'var(--paper)'};">${m[0]}</div><span>${m[1]}</span><span class="ar">›</span></div>`).join("");
+}
+
+/* ============ 详情 ============ */
+function openDetail(title){
+  const a=ACTS.find(x=>x.en.t===title);if(!a)return;
+  detailAct=a;tixSel="pre";drawDetail();goPage("detail",true);
+}
+function drawDetail(){
+  const a=detailAct,t=T(),L=a[lang];
+  const early=a.price-30,door=a.price+50;
+  const tix=[["early",early],["pre",a.price],["door",door]];
+  const has=myTickets.some(tk=>tk.act===a);
+  $("detailWrap").innerHTML=`
+    <div class="d-cover" style="background:${a.grad}">
+      <div class="back" onclick="goBackDetail()">‹</div>
+      <div class="share" onclick="toast('${t.shareOk}')">SHARE</div>
+      ${a.emoji}
+    </div>
+    <div class="d-body">
+      <div class="d-tags">
+        <span class="d-tag" style="background:${sceneOf(a.cat).chip};">${L.tag}</span>
+        <span class="d-tag" style="background:var(--paper);">EN/中英</span>
+        <span class="d-tag" style="background:var(--ink);color:var(--lime);">${t.selling}</span>
+      </div>
+      <h2><u>${L.t}</u></h2>
+      <div class="d-info">
+        <div class="li"><span class="ic">📅</span><div><b>${fmtDate(a)}</b><span>${t.dLabels.date}</span></div></div>
+        <div class="li"><span class="ic">📍</span><div><b>${L.venue}</b><span>${t.dLabels.venue}</span></div></div>
+        <div class="li"><span class="ic">✦</span><div><b>${L.host}</b><span>${t.dLabels.host}</span></div></div>
+        <div class="li"><span class="ic">🗣</span><div><b>English / 中文</b><span>${t.dLabels.lang}</span></div></div>
+      </div>
+      <div class="d-sec-t">${t.lineup}</div>
+      <div class="lineup">${a.lineup.map(l=>`<div class="art"><em>${l[0]}</em><b>${l[1]}</b></div>`).join("")}</div>
+      <div class="d-sec-t">${t.who} · ${a.going} ${t.people}</div>
+      <div class="avatars">${["🧑‍🎤","👩‍🦰","🧑‍💻","👨‍🎨","👩‍🔬"].map(e=>`<div class="av">${e}</div>`).join("")}<span class="more">+${a.going-5} →</span></div>
+      <div class="join-cta" onclick="toast('${t.joinOk}')"><div><b>${t.joinGroup}</b><span>${lang==='zh'?'双语群 · 面基不尴尬':'bilingual · no awkward icebreakers'}</span></div><span class="go">GO →</span></div>
+      <div class="d-sec-t">${t.dLabels.tix}</div>
+      <div class="tickets">${tix.map(x=>`
+        <div class="tix-opt ${tixSel===x[0]?'sel':''}" onclick="selTix('${x[0]}')">
+          <div><b>${t.tixTypes[x[0]]}</b><span>${t.tixDesc[x[0]]}</span></div>
+          <div class="p">${x[0]==='pre'?`<em>¥${early}</em>`:""}¥${x[1]}</div>
+        </div>`).join("")}
+      </div>
+      <div style="height:20px"></div>
+      <div class="d-bottom">
+        <div class="tp">¥${tixSel==='early'?early:tixSel==='pre'?a.price:door}<small> ${t.per}</small></div>
+        <button class="buy ${has?'ok':''}" onclick="buyNow()">${has?t.bought:t.buy}</button>
+      </div>
+    </div>`;
+}
+function selTix(k){tixSel=k;drawDetail();}
+function buyNow(){
+  const a=detailAct;
+  const i=myTickets.findIndex(tk=>tk.act===a);
+  if(i>-1){myTickets.splice(i,1);toast(T().cancelOk);}
+  else{myTickets.push({act:a,type:tixSel,no:tixSeq++,used:false});toast(T().buyOk);}
+  drawDetail();
+}
+function goBackDetail(){closeSheets();goTab("discover");if(scene!=="all"||sub!=="all")goPage("list");}
+
+/* ============ AI Chat 引擎 ============ */
+const GRADS={
+  sports:"linear-gradient(135deg,#7ee8f2,#2FD4E0)",
+  music:"linear-gradient(135deg,#8b7bff,#6C4DFF)",
+  outdoor:"linear-gradient(135deg,#c9f77e,#8fd435)",
+  shows:"linear-gradient(135deg,#ff9d80,#FF5A36)",
+  food:"linear-gradient(135deg,#ff9db5,#FF6FA5)",
+  custom:"linear-gradient(135deg,#ffe08a,#FFC531)"
+};
+let chatInit=false, pub=null, chatDraft=null, pendingImg=null;
+const SUB_KW={skate:["滑板","skate"],tennis:["网球","tennis"],livehouse:["livehouse","live house","乐队","现场演出"],techno:["techno","house","电子","rave","派对","dj","蹦迪"],hiking:["徒步","爬山","hike","露营","骑行","游山玩水"],comedy:["脱口秀","喜剧","comedy","段子","开放麦"],musical:["音乐剧","musical"],magic:["魔术","magic"],dining:["聚餐","火锅","美食","dinner","food","吃饭","小吃","早茶"]};
+const SCENE_KW={sports:["运动","sport","滑板","网球"],music:["音乐","music","live","演出"],outdoor:["游玩","户外","outdoor","山","海"],shows:["表演","show","脱口秀","音乐剧","魔术"],food:["吃","美食","food"],custom:["自定义","custom","other","桌游","市集","剧本杀","language exchange","语言交换","观影","board game"]};
+
+function chatEl(html){const d=document.createElement("div");d.innerHTML=html;return d.firstElementChild;}
+function scrollChat(){const m=$("chatMsgs");setTimeout(()=>m.scrollTop=m.scrollHeight,30);}
+function addMsg(who,html){
+  const m=$("chatMsgs");
+  const el=document.createElement("div");
+  el.className="msg "+who;
+  const now=new Date();
+  const tm=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+  el.innerHTML=`<div><div class="bubble">${html}</div><div class="msg-time">${tm}</div></div>`;
+  m.appendChild(el);scrollChat();return el;
+}
+function botSay(html,delay){
+  const m=$("chatMsgs");
+  const tp=document.createElement("div");
+  tp.className="msg bot";
+  tp.innerHTML=`<div class="bubble typing"><span></span><span></span><span></span></div>`;
+  m.appendChild(tp);scrollChat();
+  setTimeout(()=>{tp.remove();addMsg("bot",html);},delay||700);
+}
+
+/* —— 搜索 —— */
+function botSearch(text){
+  const t=T(),low=text.toLowerCase();
+  const mc=CITIES.find(c=>text.includes(c.zh)||low.includes(c.en.toLowerCase()));
+  const target=mc?mc.id:city;
+  if(mc&&mc.id!==city){city=mc.id;calDay=null;renderAll();}
+  let subs=[];for(const[k,kws]of Object.entries(SUB_KW)){if(kws.some(w=>low.includes(w)))subs.push(k);}
+  let sc=null;for(const[k,kws]of Object.entries(SCENE_KW)){if(kws.some(w=>low.includes(w)))sc=k;}
+  let list=ACTS.filter(a=>a.city===target).sort((x,y)=>x.d-y.d);
+  if(subs.length)list=list.filter(a=>subs.includes(a.sub));
+  else if(sc)list=list.filter(a=>a.cat===sc);
+  if(!list.length){botSay(t.chatNotFound,600);return;}
+  const top=list.slice(0,3);
+  const cards=top.map(a=>{
+    const L=a[lang];
+    return `<div class="chat-act" onclick="openDetail('${esc(a.en.t)}')">
+      <div class="ca-art" style="background:${a.grad}">${a.emoji}</div>
+      <div class="ca-body"><b>${L.t}</b><span>${fmtDate(a)} · ${L.venue}</span></div>
+      <div class="ca-p">¥${a.price}</div>
+    </div>`;
+  }).join("");
+  const cn=lang==='zh'?cityOf(target).zh:cityOf(target).en;
+  botSay(`${t.chatFound.replace("{n}",list.length)} <b>${cn}</b>${cards}
+    <div class="go-all-btn" onclick="goScene('all')">${t.chatGoAll}</div>`,800);
+}
+
+/* —— 发布向导 —— */
+function startPublish(){pub={step:"name",draft:{}};botSay(T().chatPubStart,700);}
+function pubSummaryCard(d){
+  const t=T();
+  return `<div class="draft-card">
+    <div class="dc-t">${t.chatDraftTitle}</div>
+    <div class="drow"><label>${lang==='zh'?'名称':'TITLE'}</label><b>${d.title}</b></div>
+    <div class="drow"><label>${lang==='zh'?'场景':'SCENE'}</label><b>${d.cat==="custom"?(d.customTag||T().sceneShort.custom)+" ✨":t.sceneShort[d.cat]+" "+sceneOf(d.cat).emoji}</b></div>
+    <div class="drow"><label>${lang==='zh'?'时间':'WHEN'}</label><b>${d.whenText}</b></div>
+    <div class="drow"><label>${lang==='zh'?'场地':'VENUE'}</label><b>${d.venue}</b></div>
+    <div class="drow"><label>${lang==='zh'?'票价':'PRICE'}</label><b>¥${d.price}</b></div>
+    <div class="draft-actions">
+      <button class="ok" onclick="publishDraft()">${t.chatImgOk}</button>
+      <button class="re" onclick="this.closest('.msg').remove();${d.fromImg?"$('imgInput').click()":"startPublish()"}">${d.fromImg?t.chatImgRedo:(lang==='zh'?'重新填写':'Redo')}</button>
+    </div>
+  </div>`;
+}
+function publishDraft(){
+  const d=chatDraft||pub.draft;if(!d||!d.title)return;
+  const cat=d.cat||"music";
+  const tagTxt=d.cat==="custom"?((d.customTag||"CUSTOM").toUpperCase().slice(0,14)):(cat.toUpperCase());
+  ACTS.push({
+    city:d.city||city,cat,sub:sceneOf(cat).subs[0]||"custom",emoji:sceneOf(cat).emoji,grad:GRADS[cat],
+    d:d.d??7,hm:d.hm||"19:00",price:d.price||99,going:1,spots:30,hot:true,
+    zh:{t:d.title,venue:d.venue,host:T().chatYouHost,tag:tagTxt},
+    en:{t:d.title,venue:d.venue,host:T().chatYouHost,tag:tagTxt},
+    lineup:[["Host",T().chatYouHost]]
+  });
+  chatDraft=null;pub=null;
+  renderAll();toast("🎉 "+T().chatPubDone);
+  botSay(T().chatPubDone,600);
+}
+function genName(){
+  const pool=lang==='zh'
+   ?["霓虹狂想夜","周末不回家计划","快乐浓度超标现场","神秘来宾空降局","城市漫游奇遇记","热血开麦派对","微醺乌托邦","多巴胺补给站","人间烟火观测局","有点上头俱乐部"]
+   :["Neon Rhapsody","No-Home Weekend","Overdose of Fun","Mystery Drop-In","City Roaming Quest","Hype Mic Party","Tipsy Utopia","Dopamine Refill","Fireworks & Feelings","Slightly Addicted Club"];
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function regenName(){
+  if(!pub||pub.step!=="scene")return;
+  pub.draft.title=genName();
+  addMsg("bot",`✨ <b>${pub.draft.title}</b><div class="go-all-btn" onclick="regenName()">🔄 ${lang==='zh'?'再抽一个':'Reroll'}</div>`);
+}
+function pubStep(text){
+  const t=T();
+  if(/取消|退出|算了|cancel|quit|stop/i.test(text)){pub=null;botSay(t.chatPubCancel,500);return;}
+  const isAny=/^[\s,.!！。?？]*(随便|都可以|无所谓|你来|你帮|帮我|帮我想|你定|你决定|你选|想个|起个|起名|你看着|surprise|up to you|you decide|you pick|you choose|whatever|anything)[^]*$/i.test(text)&&text.length<30;
+  if(pub.step==="name"){
+    if(isAny){
+      pub.draft.title=genName();pub.step="scene";
+      botSay(t.chatPubNameGen.replace("{t}",pub.draft.title),700);
+      setTimeout(()=>addMsg("bot",`<div class="go-all-btn" onclick="regenName()">🔄 ${lang==='zh'?'不满意？再抽一个':'Not feeling it? Reroll'}</div>`),900);
+      return;
+    }
+    pub.draft.title=text.trim();pub.step="scene";botSay(t.chatPubScene.replace("{t}",pub.draft.title),600);return;
+  }
+  if(pub.step==="scene"){
+    const low=text.toLowerCase();
+    if(isAny){
+      const s=SCENES[Math.floor(Math.random()*5)];
+      pub.draft.cat=s.id;pub.step="when";
+      botSay(t.chatPubSceneAny.replace("{t}",t.sceneShort[s.id]+" "+s.emoji),600);return;
+    }
+    const hit=SCENES.find(s=>s.id==="sports"&&/运动|滑板|网球|sport|skate|tennis/.test(low))
+      ||SCENES.find(s=>s.id==="music"&&/音乐|live|techno|house|music|派对|演出/.test(low))
+      ||SCENES.find(s=>s.id==="outdoor"&&/游玩|户外|徒步|山|outdoor|hike/.test(low))
+      ||SCENES.find(s=>s.id==="shows"&&/表演|脱口秀|音乐剧|魔术|show|comedy|magic/.test(low))
+      ||SCENES.find(s=>s.id==="food"&&/美食|吃|聚餐|火锅|food|dining/.test(low));
+    if(!hit){
+      const tag=text.trim().slice(0,12);
+      if(!tag){botSay(t.chatPubSceneRetry,500);return;}
+      pub.draft.cat="custom";pub.draft.customTag=tag;pub.step="when";
+      botSay(t.chatPubCustom.replace("{t}",tag),600);return;
+    }
+    pub.draft.cat=hit.id;pub.step="when";botSay(t.chatPubWhen,600);return;
+  }
+  if(pub.step==="when"){
+    if(isAny){
+      pub.draft.whenText=lang==='zh'?"下周六 19:00":"Next Sat 19:00";
+      pub.draft.d=6;pub.draft.hm="19:00";
+      pub.step="venue";botSay(t.chatPubWhenAny.replace("{t}",pub.draft.whenText),600);return;
+    }
+    pub.draft.whenText=text.trim();
+    const m=text.match(/(\d{1,2})\s*月\s*(\d{1,2})/);const h=text.match(/(\d{1,2}):(\d{2})/);
+    if(m){const now=new Date(T0.getFullYear(),T0.getMonth(),T0.getDate());const tgt=new Date(T0.getFullYear(),parseInt(m[1])-1,parseInt(m[2]));let off=Math.round((tgt-now)/86400000);if(off<0)off+=30;pub.draft.d=off;}
+    if(h)pub.draft.hm=h[1]+":"+h[2];
+    pub.step="venue";botSay(t.chatPubVenue,600);return;
+  }
+  if(pub.step==="venue"){
+    pub.draft.venue=isAny?(lang==='zh'?"待定（发布前可改）":"TBD (editable)"):text.trim();
+    const mc=CITIES.find(c=>text.includes(c.zh)||text.toLowerCase().includes(c.en.toLowerCase()));
+    if(mc)pub.draft.city=mc.id;
+    pub.step="price";botSay(t.chatPubPrice,600);return;
+  }
+  if(pub.step==="price"){
+    const p=text.match(/\d+/);pub.draft.price=p?parseInt(p[0]):99;
+    pub.step="done";chatDraft=pub.draft;pub=null;
+    botSay(T().chatPubSummary,500);
+    setTimeout(()=>addMsg("bot",pubSummaryCard(chatDraft)),700);
+  }
+}
+
+/* —— 识图发布 —— */
+function onImgPick(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    pendingImg=r.result;
+    addMsg("me",`<img src="${pendingImg}" alt="poster">`);
+    const t=T();
+    botSay("🔎 "+(lang==='zh'?'识图中…':'Scanning poster…'),500);
+    /* 模拟提取（演示数据） */
+    setTimeout(()=>{
+      const isEn=lang==='en';
+      chatDraft={
+        fromImg:true,
+        title:isEn?"Cyber Budha Rave 赛博梵音 #5":"赛博梵音 Cyber Budha #5 派对",
+        cat:"music",whenText:isEn?"Oct 9, Fri, 22:00":"10月9日 周五 22:00",
+        d:2,hm:"22:00",venue:isEn?"Heim, Shanghai":"上海 Heim",city:"shanghai",price:150
+      };
+      const t2=T();
+      botSay(t2.chatImgRead,600);
+      setTimeout(()=>addMsg("bot",pubSummaryCard(chatDraft)),700);
+    },1200);
+  };
+  r.readAsDataURL(f);
+  e.target.value="";
+}
+
+/* —— 消息路由 —— */
+function sendChat(){
+  const inp=$("chatInput");const text=inp.value.trim();if(!text)return;
+  inp.value="";handleUser(text);
+}
+function chipSend(i){handleUser(T().chatChips[i]);}
+function handleUser(text){
+  addMsg("me",text.replace(/</g,"&lt;"));
+  /* 发布中 → 向导 */
+  if(pub){pubStep(text);return;}
+  const low=text.toLowerCase();
+  /* 发布意图 */
+  if(/发布|发起|组织|创建|办一?场|host|publish|create|organize/i.test(low)){startPublish();return;}
+  /* 传图意图 */
+  if(/海报|传图|图片|上传|poster|upload|image/i.test(low)){botSay(T().chatImgAsk,500);return;}
+  /* 搜索意图 */
+  const mc=CITIES.find(c=>text.includes(c.zh)||low.includes(c.en.toLowerCase()));
+  const hasScene=Object.values(SUB_KW).flat().some(w=>low.includes(w))||Object.values(SCENE_KW).flat().some(w=>low.includes(w));
+  if(hasScene||mc||/活动|推荐|有什么|玩|event|recommend|weekend|周末|今晚|show me|find/i.test(low)){botSearch(text);return;}
+  /* 默认引导 */
+  const t=T();
+  botSay(t.chatWelcome.replace("Hey, I'm LarkyGO AI ✦",lang==='zh'?"换个问法试试 ✦":"Try another way ✦"),600);
+}
+
+/* —— 初始化聊天 —— */
+function ensureChat(){
+  if(chatInit)return;chatInit=true;
+  const t=T();
+  setTimeout(()=>addMsg("bot",t.chatWelcome),150);
+  renderQuickChips();
+}
+function renderQuickChips(){
+  $("quickChips").innerHTML=T().chatChips.map((c,i)=>`<div class="qchip" onclick="chipSend(${i})">${c}</div>`).join("");
+  $("chatInput").placeholder=T().chatPh;
+  $("chatSub").textContent=T().chatSub;
+  $("chatTitle").textContent="LarkyGO AI";
+}
+
+/* ============ 导航 ============ */
+function goPage(p,noTab){
+  document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
+  $("page-"+p).classList.add("active");
+  document.querySelectorAll(".tab").forEach(el=>el.classList.remove("on"));
+  if(!noTab){$("tab-"+p)?.classList.add("on");}
+}
+function goTab(p){closeSheets();if(p==="chat")ensureChat();renderAll();goPage(p);}
+function pickScene(s){scene=s;sub="all";renderDiscover();if($("page-list").classList.contains("active"))renderListPage();}
+function goScene(s){scene=s;sub="all";renderListPage();goPage("list");}
+function pickSub(s){sub=s;renderListPage();}
+function pickCalDay(d){calDay=d;renderCal();}
+function pickCity(id){city=id;calDay=null;closeSheets();renderAll();toast(T().pickCityOk+(lang==='zh'?cityOf(id).zh:cityOf(id).en)+" ✦");}
+function toggleLang(){lang=lang==='zh'?'en':'zh';renderAll();if(detailAct)drawDetail();}
+function openSheet(k){$("cityMask").classList.add("show");$(k+"Sheet").classList.add("show");}
+function closeSheets(){$("cityMask").classList.remove("show");$("citySheet").classList.remove("show");}
+function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("show"),1900);}
+
+function renderTicker(){
+  const hot=ACTS.filter(a=>a.hot);
+  const items=hot.map(a=>`${a.emoji} ${a[lang].t}`).join(" &nbsp;●&nbsp; ");
+  const one=(lang==='zh'?'开票中 ON SALE ✦ ':'ON SALE ✦ ')+items+" &nbsp;●&nbsp; ";
+  $("ticker").innerHTML=`<span style="margin-right:40px;">${one}</span><span>${one}</span>`;
+}
+
+function renderAll(){
+  const t=T();
+  ["langBtn","langBtn2","langBtn3","langBtn4"].forEach(i=>$(i).textContent=t.langBtn);
+  $("navCity").textContent=lang==='zh'?`${cityOf(city).zh} ${cityOf(city).py}`:`${cityOf(city).en} ${cityOf(city).py}`;
+  $("searchPh").textContent=t.searchPh;
+  $("sheetCityT").textContent=t.sheetCityT;
+  $("statDesc").textContent=t.statDesc;$("statTix").textContent=t.statTix;
+  $("railMore").textContent=t.viewAll;
+  if(chatInit)renderQuickChips();
+  document.querySelector("#page-cal .brand b").textContent=lang==='zh'?"日历":t.calBrand;
+  document.querySelector("#page-cal .brand span").textContent=lang==='zh'?"今天去哪 · WHAT'S ON":"WHAT'S ON";
+  document.querySelector("#page-tickets .brand b").textContent=lang==='zh'?"票夹":t.tixBrand;
+  document.querySelector("#page-tickets .brand span").textContent=lang==='zh'?"出示入场 · YOUR PASSES":"YOUR PASSES";
+  $("tHome").textContent=lang==='zh'?"发现":"Discover";
+  $("tCal").textContent=lang==='zh'?"日历":"Calendar";
+  $("tFab").textContent="AI";
+  $("tTix").textContent=lang==='zh'?"票夹":"Tickets";
+  $("tMe").textContent=lang==='zh'?"我的":"Me";
+  $("meName").textContent=t.meName;$("meSub").textContent=t.meSub;
+  $("stJ").textContent=t.stJ;$("stF").textContent=t.stF;$("stR").textContent=t.stR;$("stH").textContent=t.stH;
+  $("cityGrid").innerHTML=CITIES.map(c=>`<div class="city-cell ${c.id===city?'on':''}" onclick="pickCity('${c.id}')"><b>${lang==='zh'?c.zh:c.en}</b><span>${c.py}</span></div>`).join("");
+  renderChips();renderDiscover();renderListPage();renderCal();renderTickets();renderMe();renderTicker();
+}
+renderAll();
+const n=new Date();$("sbTime").textContent=String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
+</script>
+</body>
+</html>

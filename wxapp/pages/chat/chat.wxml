@@ -1,0 +1,87 @@
+<view class="page">
+  <!-- 聊天头部 -->
+  <view class="chat-head">
+    <view class="ai-ava">✦</view>
+    <view class="ch-t">
+      <text class="ch-name">LarkyGO AI</text>
+      <text class="ch-sub">{{t.chatSub}}{{aiOn ? ' · ✨ GLM' : ''}}</text>
+    </view>
+    <view class="ch-lang" bindtap="initChat">↻</view>
+  </view>
+
+  <!-- 消息区 -->
+  <scroll-view class="msgs" scroll-y scroll-into-view="{{scrollId}}" scroll-with-animation>
+    <view wx:for="{{msgs}}" wx:key="id" id="m{{item.id}}" class="msg {{item.role}}">
+      <block wx:if="{{item.role==='user' && item.img}}">
+        <image class="u-img" src="{{item.img}}" mode="aspectFill" />
+      </block>
+      <block wx:else>
+        <view class="bubble">
+          <text class="b-text">{{item.text}}</text>
+
+          <!-- 活动卡片组 -->
+          <view wx:if="{{item.cards}}" class="c-cards">
+            <view wx:for="{{item.cards}}" wx:for-item="c" wx:key="idx" class="c-card" data-idx="{{c.idx}}" bindtap="openCard">
+              <view class="cc-grad" style="background:{{c.grad}}">{{c.emoji}}</view>
+              <view class="cc-info">
+                <text class="cc-title">{{c.title}}</text>
+                <text class="cc-meta">📅 {{c.dateText}} · ¥{{c.price}}</text>
+              </view>
+            </view>
+            <view wx:if="{{item.goAll}}" class="go-all" bindtap="goAll">{{t.chatGoAll}}</view>
+          </view>
+
+          <!-- 重抽按钮 -->
+          <view wx:if="{{item.reroll}}" class="go-all" bindtap="regenName">🔄 {{lang==='zh'?'不满意？再抽一个':'Reroll'}}</view>
+
+          <!-- 草稿确认卡 -->
+          <view wx:if="{{item.draft}}" class="draft">
+            <view class="drow"><text class="dl">{{lang==='zh'?'名称':'TITLE'}}</text><text class="dv">{{item.draft.title}}</text></view>
+            <view class="drow"><text class="dl">{{lang==='zh'?'场景':'SCENE'}}</text><text class="dv">{{item.draft.scene}}</text></view>
+            <view class="drow"><text class="dl">{{lang==='zh'?'时间':'WHEN'}}</text><text class="dv">{{item.draft.when}}</text></view>
+            <view class="drow"><text class="dl">{{lang==='zh'?'场地':'VENUE'}}</text><text class="dv">{{item.draft.venue}}</text></view>
+            <view class="drow"><text class="dl">{{lang==='zh'?'票价':'PRICE'}}</text><text class="dv">¥{{item.draft.price}}</text></view>
+            <view class="d-actions">
+              <view class="d-ok" catchtap="publishDraft">{{t.chatImgOk}}</view>
+              <view class="d-re" catchtap="draftRedo">{{item.fromImg ? t.chatImgRedo : (lang==='zh'?'重新填写':'Redo')}}</view>
+            </view>
+          </view>
+        </view>
+      </block>
+      <text class="m-time">{{item.time}}</text>
+    </view>
+    <view wx:if="{{typing}}" class="msg bot">
+      <view class="bubble typing"><view class="td"></view><view class="td"></view><view class="td"></view></view>
+    </view>
+    <view class="pad-bottom"></view>
+  </scroll-view>
+
+  <!-- 快捷指令 -->
+  <scroll-view class="quick" scroll-x enable-flex>
+    <view wx:for="{{quick}}" wx:key="*this" class="qchip" data-q="{{item}}" bindtap="quickTap">{{item}}</view>
+  </scroll-view>
+
+  <!-- 输入区 -->
+  <view class="inputbar">
+    <view class="cam" bindtap="pickImg">📷</view>
+    <!-- 语音按钮（按住说话）：松开即开始识别 -->
+    <view class="mic {{recording ? 'recording' : ''}}"
+          bindtouchstart="micStart"
+          bindtouchmove="micTouchMove"
+          bindtouchend="micStop"
+          bindtouchcancel="micCancel">
+      <text class="mic-ico">{{recording ? '◼' : '🎤'}}</text>
+      <text class="mic-txt" wx:if="{{recording}}">{{lang==='zh'?'松开发送':'Release'}}</text>
+      <text class="mic-txt" wx:else>{{lang==='zh'?'按住说话':'Hold'}}</text>
+    </view>
+    <input class="ipt" value="{{input}}" bindinput="onInput" bindconfirm="send" confirm-type="send"
+      placeholder="{{lang==='zh'?'问我任何活动问题…':'Ask me anything…'}}" />
+    <view class="send" bindtap="send">➤</view>
+  </view>
+
+  <!-- 录音中底部提示 -->
+  <view wx:if="{{recording}}" class="voice-tip">
+    <text class="vt-dot"></text>
+    <text>{{lang==='zh'?'正在录音… 上滑取消':'Recording… swipe up to cancel'}}</text>
+  </view>
+</view>
