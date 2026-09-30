@@ -1,9 +1,10 @@
 // =====================================================
-//  LARKY! 服务端云函数（微信云开发版）
+//  LarkyGO 服务端云函数（微信云开发版）
 //  一个函数统一处理：
 //    ai      — GLM 对话（key 只存在这里，绝不进小程序包）
 //    aiImage — GLM 视觉识图（图片经云存储中转，fileID 传入）
 //    audio   — GLM-4-Voice 语音转文字（mp3 fileID → 文本）
+//    tts     — Edge TTS 文字转语音（CN+EN 双语，零 API key）
 //    login   — cloud.getWXContext() 免 code2session 拿 openid
 //    text    — msgSecCheck 文本内容安全（云调用免 access_token）
 //    image   — imgSecCheck 图片内容安全（云调用免 access_token）
@@ -20,10 +21,18 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 // —— 配置区 ——
 const GLM_KEY = 'b37ca7986db441f2b087c60987f80c46.hWLJ9qafiGJElNbR'  // 智谱 key：只存在云端
 const GLM_CHAT_ENDPOINT = 'https://open.bigmodel.cn/api/paas/v4/chat/completions'
-const GLM_ASR_ENDPOINT = 'https://open.bigmodel.cn/api/paas/v4/audio/transcriptions'  // Whisper 兼容
 const CHAT_MODEL = 'glm-4.7-flash'
 const VISION_MODEL = 'glm-4v-flash'
 const VOICE_MODEL = 'glm-4-voice'        // 端到端语音对话模型
+
+// —— TTS 角色映射（微软 Edge TTS 神经声）——
+// zh → 中文女声晓晓 / 男声云希；en → 英文女声 Jenny / 男声 Guy
+const TTS_VOICES = {
+  'zh-female': 'zh-CN-XiaoxiaoNeural',
+  'zh-male':   'zh-CN-YunxiNeural',
+  'en-female': 'en-US-JennyNeural',
+  'en-male':   'en-US-GuyNeural'
+}
 
 exports.main = async (event) => {
   const { action } = event
@@ -32,6 +41,7 @@ exports.main = async (event) => {
       case 'ai':      return await handleAI(event)
       case 'aiImage': return await handleAIImage(event)
       case 'audio':   return await handleAudio(event)
+      case 'tts':     return await handleTTS(event)
       case 'login':   return await handleLogin(event)
       case 'text':    return await handleTextSec(event)
       case 'image':   return await handleImageSec(event)
@@ -137,14 +147,64 @@ async function handleAudio({ fileID, lang }) {
   return { text }
 }
 
-// ────── 4. 登录：免 code2session，云函数直接拿 openid ──────
+// ────── 4. TTS：Edge TTS 文字转语音（CN+EN 双语，零 API key） ──────
+// 输入：{ text, voice: 'zh-female' | 'zh-male' | 'en-female' | 'en-male' }
+// 输出：{ fileID, voice, duration, cached }
+// 缓存：客户端按 text hash 缓存 50 条 fileID 复用，避免重复合成
+async function handleTTS({ text, voice, voiceName }) {
+  if (!text || typeof text !== 'string') return { err: 'no text' }
+  // 限制：去掉表情符号 + 截断（Edge TTS 不读 emoji；长文 < 800 字）
+  const clean = text.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 800)
+  if (!clean) return { err: 'empty after clean' }
+  const v = voiceName || TTS_VOICES[voice] || TTS_VOICES['zh-female']
+
+  try {
+    // edge-tts npm 包：把文本转 mp3
+    const tts = require('edge-tts')
+    const chunks = []
+    for await (const chunk of tts(clean, {
+      voice: v,
+      lang: v.startsWith('zh') ? 'zh-CN' : 'en-US',
+      outputFormat: 'audio-24khz-48kbitrate-mono-mp3'
+    })) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+    }
+    const audioBuffer = Buffer.concat(chunks)
+    if (audioBuffer.length < 100) return { err: 'tts empty buffer' }
+
+    // 上传到云存储，文件名带 hash 方便客户端 key
+    const hash = cryptoHash(clean + '|' + v).slice(0, 16)
+    const cloudPath = `tts/${hash}.mp3`
+    const upload = await cloud.uploadFile({
+      cloudPath,
+      fileContent: audioBuffer
+    })
+    return {
+      fileID: upload.fileID,
+      voice: v,
+      duration: Math.round(audioBuffer.length / 16000), // 粗估秒数
+      size: audioBuffer.length
+    }
+  } catch (e) {
+    console.error('[tts]', e.message)
+    return { err: 'tts failed: ' + e.message }
+  }
+}
+
+function cryptoHash(s) {
+  // 简易哈希（不依赖 crypto 模块以防 sandbox 缺包；cloud function 自带 crypto）
+  const c = require('crypto')
+  return c.createHash('md5').update(s).digest('hex')
+}
+
+// ────── 5. 登录：免 code2session，云函数直接拿 openid ──────
 async function handleLogin() {
   const ctx = cloud.getWXContext()
   if (!ctx.OPENID) return { err: 'no openid in context' }
   return { openid: ctx.OPENID, unionid: ctx.UNIONID || '' }
 }
 
-// ────── 5. 文本内容安全（云调用，免 access_token） ──────
+// ────── 6. 文本内容安全（云调用，免 access_token） ──────
 async function handleTextSec({ text, openid }) {
   const ctx = cloud.getWXContext()
   const uid = ctx.OPENID || openid
@@ -165,7 +225,7 @@ async function handleTextSec({ text, openid }) {
   }
 }
 
-// ────── 6. 图片内容安全（云调用 imgSecCheck，≤1M） ──────
+// ────── 7. 图片内容安全（云调用 imgSecCheck，≤1M） ──────
 async function handleImageSec({ fileID }) {
   if (!fileID) return { pass: true, note: 'no fileID' }
   try {

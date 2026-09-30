@@ -1,9 +1,10 @@
 {
   "name": "larky-server",
-  "version": "1.0.0",
-  "description": "LARKY! 服务端云函数：GLM AI + 登录 + 内容安全",
+  "version": "1.1.0",
+  "description": "LarkyGO 服务端云函数：GLM AI + 登录 + 内容安全 + TTS",
   "main": "index.js",
   "dependencies": {
-    "wx-server-sdk": "~2.6.3"
+    "wx-server-sdk": "~2.6.3",
+    "edge-tts": "^1.0.0"
   }
 }

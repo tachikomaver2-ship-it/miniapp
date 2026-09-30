@@ -6,6 +6,10 @@
       <text class="ch-name">LarkyGO AI</text>
       <text class="ch-sub">{{t.chatSub}}{{aiOn ? ' · ✨ GLM' : ''}}</text>
     </view>
+    <!-- 自动朗读开关 -->
+    <view class="ch-tts {{autoPlay?'on':''}}" bindtap="toggleAutoPlay">
+      <text class="ct-ico">{{autoPlay?'🔊':'🔇'}}</text>
+    </view>
     <view class="ch-lang" bindtap="initChat">↻</view>
   </view>
 
@@ -45,6 +49,16 @@
               <view class="d-ok" catchtap="publishDraft">{{t.chatImgOk}}</view>
               <view class="d-re" catchtap="draftRedo">{{item.fromImg ? t.chatImgRedo : (lang==='zh'?'重新填写':'Redo')}}</view>
             </view>
+          </view>
+
+          <!-- AI 朗读按钮：仅 bot 消息且有文本可读时显示 -->
+          <view wx:if="{{item.role==='bot' && item.text}}"
+                class="b-tts {{speaking===index?'on':''}}"
+                catchtap="speakTap"
+                data-idx="{{index}}"
+                data-text="{{item.text}}"
+                hover-class="b-tts-hover">
+            <text class="bt-ico">{{speaking===index?'🔊':'🔉'}}</text>
           </view>
         </view>
       </block>

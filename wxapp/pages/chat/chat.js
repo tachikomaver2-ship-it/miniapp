@@ -7,17 +7,101 @@ const app = getApp()
 const IS_ANY = /^[\s,.!！。?？]*(随便|都可以|无所谓|你来|你帮|帮我|帮我想|你定|你决定|你选|想个|起个|起名|你看着|surprise|up to you|you decide|you pick|you choose|whatever|anything)[^]*$/i
 
 Page({
-  data: { t: {}, lang: 'zh', msgs: [], input: '', quick: [], typing: false, recording: false, voiceText: '' },
+  data: { t: {}, lang: 'zh', msgs: [], input: '', quick: [], typing: false, recording: false, voiceText: '', speaking: -1, autoPlay: false },
   onLoad() {
     this.pub = null; this.draft = null; this.initChat()
     this.initRecorder()
+    this.initAudio()
   },
   onShow() {
-    this.setData({ t: T(), lang: app.globalData.lang, aiOn: ai.hasKey() })
+    const ap = wx.getStorageSync('larky_autoplay') || false
+    this.setData({ t: T(), lang: app.globalData.lang, aiOn: ai.hasKey(), autoPlay: ap })
     this.buildQuick()
   },
   onUnload() {
     if (this.recorder) this.recorder.stop()
+    if (this.audio) { this.audio.stop(); this.audio.destroy() }
+  },
+
+  // ==========================================
+  //  TTS 语音输出（AI 消息朗读）
+  // ==========================================
+  initAudio() {
+    this.audio = wx.createInnerAudioContext({ useWebAudioImplement: false })
+    this.audio.obeyMuteSwitch = false
+    this.audio.onEnded(() => this.setData({ speaking: -1 }))
+    this.audio.onStop(() => this.setData({ speaking: -1 }))
+    this.audio.onError((e) => { console.warn('[tts]', e); this.setData({ speaking: -1 }) })
+  },
+
+  // 缓存 key（客户端按 text+voice hash 复用 fileID，避免重复合成）
+  ttsCacheKey(text, voice) {
+    let h = 0
+    const s = (voice || '') + '|' + text
+    for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0 }
+    return 'tts_' + (h >>> 0).toString(36)
+  },
+
+  toggleAutoPlay() {
+    const next = !this.data.autoPlay
+    this.setData({ autoPlay: next })
+    wx.setStorageSync('larky_autoplay', next)
+    if (next && this.data.lang === 'zh') wx.showToast({ title: '🔊 自动朗读已开', icon: 'none' })
+    else if (!next && this.data.lang === 'zh') wx.showToast({ title: '🔇 自动朗读已关', icon: 'none' })
+  },
+
+  // 点击气泡上的 🔊 按钮：再次点击同一消息则停止
+  async speakTap(e) {
+    const { idx, text } = e.currentTarget.dataset
+    if (this.data.speaking === idx) {
+      this.audio.stop()
+      this.setData({ speaking: -1 })
+      return
+    }
+    // 切到当前消息前先停旧的
+    if (this.audio) this.audio.stop()
+    this.setData({ speaking: idx })
+    this.speakText(text, idx)
+  },
+
+  async speakText(text, idx) {
+    if (!text) return
+    const voice = this.data.lang === 'zh' ? 'zh-female' : 'en-female'
+    const cacheKey = this.ttsCacheKey(text, voice)
+    let fileID = wx.getStorageSync(cacheKey)
+    try {
+      if (!fileID) {
+        wx.showLoading({ title: this.data.lang === 'zh' ? '合成中…' : 'Synthesizing…', mask: true })
+        const res = await wx.cloud.callFunction({
+          name: 'larky-server',
+          data: { action: 'tts', text, voice }
+        })
+        wx.hideLoading()
+        if (res && res.result && res.result.err) {
+          wx.showToast({ title: this.data.lang === 'zh' ? '朗读失败' : 'TTS failed', icon: 'none' })
+          this.setData({ speaking: -1 })
+          return
+        }
+        fileID = res.result.fileID
+        wx.setStorageSync(cacheKey, fileID)
+        // 缓存上限 60 条
+        const info = wx.getStorageInfoSync()
+        if (info.keys.filter(k => k.startsWith('tts_')).length > 60) {
+          const old = wx.getStorageSync('larky_tts_keys') || []
+          old.push(cacheKey)
+          while (old.length > 60) wx.removeStorageSync(old.shift())
+          wx.setStorageSync('larky_tts_keys', old)
+        }
+      }
+      const dl = await wx.cloud.downloadFile({ fileID })
+      this.audio.src = dl.tempFilePath
+      this.audio.play()
+    } catch (err) {
+      wx.hideLoading()
+      console.warn('[tts]', err)
+      wx.showToast({ title: this.data.lang === 'zh' ? '朗读出错' : 'TTS error', icon: 'none' })
+      this.setData({ speaking: -1 })
+    }
   },
 
   // ==========================================
@@ -165,6 +249,15 @@ Page({
     const msgs = this.data.msgs.concat([{ ...m, time: this.now(), id: this.data.msgs.length }])
     this.setData({ msgs })
     this.scroll()
+    // 自动朗读：新 bot 消息且 autoPlay 开关打开时自动调用 TTS
+    if (this.data.autoPlay && m.role === 'bot' && m.text) {
+      const idx = msgs.length - 1
+      // 给动画一点时间，避免与 typing 收尾冲突
+      setTimeout(() => {
+        this.setData({ speaking: idx })
+        this.speakText(m.text, idx)
+      }, 200)
+    }
   },
   scroll() {
     setTimeout(() => this.setData({ scrollId: 'm' + (this.data.msgs.length - 1) }), 60)
